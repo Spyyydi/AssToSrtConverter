@@ -12,7 +12,11 @@ Converted srt files saved in same path as initial ass file
 - Removes vector drawing lines
 <br>
 
-- Save new actors
+- Total actors counter and allocated actors counter (Right clicking on counter gives option to see and choose not allocated actors)
+- Shows how many subtitles are without actors (To see move cursor to `Actors loaded` label)
+<br>
+  
+- Save new actors (Saved by clicking on + button)
 - Import or Export new actors attached to old actors ([Import/Export file sytax](#importexport-file-sytax))
 
 ### Convert options
