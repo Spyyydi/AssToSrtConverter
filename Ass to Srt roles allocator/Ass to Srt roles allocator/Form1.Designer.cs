@@ -44,13 +44,17 @@
             this.lblConvertionStatus = new System.Windows.Forms.Label();
             this.lblLoadStatus = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTipFileName = new System.Windows.Forms.ToolTip(this.components);
             this.btnExport = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnSaveDeleteDubers = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.chkSeparateActors = new System.Windows.Forms.CheckBox();
             this.chkActorsPerLine = new System.Windows.Forms.CheckBox();
+            this.lblAllocatedActors = new System.Windows.Forms.Label();
+            this.toolTipActorsLoaded = new System.Windows.Forms.ToolTip(this.components);
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolTipAllocatedActors = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -208,11 +212,11 @@
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
-            // toolTip
+            // toolTipFileName
             // 
-            this.toolTip.AutoPopDelay = 5000;
-            this.toolTip.InitialDelay = 500;
-            this.toolTip.ReshowDelay = 100;
+            this.toolTipFileName.AutoPopDelay = 5000;
+            this.toolTipFileName.InitialDelay = 500;
+            this.toolTipFileName.ReshowDelay = 100;
             // 
             // btnExport
             // 
@@ -274,12 +278,34 @@
             this.chkActorsPerLine.UseVisualStyleBackColor = true;
             this.chkActorsPerLine.CheckedChanged += new System.EventHandler(this.chkActorsPerLine_CheckedChanged);
             // 
+            // lblAllocatedActors
+            // 
+            this.lblAllocatedActors.AutoSize = true;
+            this.lblAllocatedActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblAllocatedActors.Location = new System.Drawing.Point(18, 125);
+            this.lblAllocatedActors.Name = "lblAllocatedActors";
+            this.lblAllocatedActors.Size = new System.Drawing.Size(85, 28);
+            this.lblAllocatedActors.TabIndex = 20;
+            this.lblAllocatedActors.Text = "Allocated actors\r\n0/0";
+            this.lblAllocatedActors.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.MaximumSize = new System.Drawing.Size(0, 300);
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.ShowImageMargin = false;
+            this.contextMenuStrip.ShowItemToolTips = false;
+            this.contextMenuStrip.Size = new System.Drawing.Size(36, 4);
+            this.contextMenuStrip.Text = "Not allocated actors";
+            this.contextMenuStrip.Click += new System.EventHandler(this.contextMenuStrip_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(398, 284);
+            this.Controls.Add(this.lblAllocatedActors);
             this.Controls.Add(this.chkActorsPerLine);
             this.Controls.Add(this.chkSeparateActors);
             this.Controls.Add(this.btnSaveDeleteDubers);
@@ -327,13 +353,17 @@
         private System.Windows.Forms.ListBox lstToChange;
         private System.Windows.Forms.Label lblLoadStatus;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.ToolTip toolTipFileName;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnSaveDeleteDubers;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.CheckBox chkSeparateActors;
         private System.Windows.Forms.CheckBox chkActorsPerLine;
+        private System.Windows.Forms.Label lblAllocatedActors;
+        private System.Windows.Forms.ToolTip toolTipActorsLoaded;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolTip toolTipAllocatedActors;
     }
 }
 

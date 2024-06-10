@@ -5,15 +5,21 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Ass_to_Srt_roles_allocator
 {
     public partial class Form1 : Form
     {
         string path = "";
-        const string rightArrow = "→";
+        const string EMPTY_ACTOR = "EMPTY ACTOR";
+        const string RIGHT_ARROW = "→";
+        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|' };
+        const char GENERAL_SEPARATOR = ';';
         List<string> subtitles;
 
         public Form1()
@@ -22,6 +28,7 @@ namespace Ass_to_Srt_roles_allocator
             subtitles = new List<string>();
             cmbDubers.Items.Clear();
             cmbDubers.Items.AddRange(Settings.Default.Dubers.Split(';'));
+            lblAllocatedActors.ContextMenuStrip = contextMenuStrip;
         }
 
         #region Additional methods
@@ -30,7 +37,8 @@ namespace Ass_to_Srt_roles_allocator
             try
             {
                 string[] subs = File.ReadAllLines(Path.Combine(filePath, fileName));
-                if (!subs.Any(s => s.StartsWith("Dialogue")))
+                if (!(subs.Any(s => s.StartsWith("Dialogue")) &&
+                    subs.Any(s => s.Substring(AssFormat.GetSpecificFormatIndex(s, AssFormat.Text)) != "")))
                 {
                     return false;
                 }
@@ -88,9 +96,6 @@ namespace Ass_to_Srt_roles_allocator
             string fileName = subFilePath.Substring(fileNameStartIndex);
             path = Path.Combine(filePath, fileName.Substring(0, fileName.LastIndexOf(".")) + ".srt");
 
-            
-            lblFilePath.Text = "File name: " + fileName;
-            toolTip.SetToolTip(lblFilePath, fileName);
 
             if (!ImportSubtitles(filePath, fileName))
             {
@@ -98,12 +103,14 @@ namespace Ass_to_Srt_roles_allocator
                 return;
             }
 
-            LoadActors();
+            lblFilePath.Text = "File name: " + fileName;
+            toolTipFileName.SetToolTip(lblFilePath, fileName);
+
+
+            string emptyActors = LoadActors();
+            toolTipActorsLoaded.SetToolTip(lblLoadStatus, "Empty actors: " + emptyActors);
+            toolTipAllocatedActors.SetToolTip(lblAllocatedActors, "Right click to see not allocated actors\nyou can select any by pressing on it");
             if (cmbActors.Items.Count < 1)
-            {
-                lblLoadStatus.ForeColor = Color.Red;
-            }
-            else if (cmbActors.Items[0].ToString() == "")
             {
                 lblLoadStatus.ForeColor = Color.Red;
             }
@@ -112,11 +119,18 @@ namespace Ass_to_Srt_roles_allocator
                 lblLoadStatus.ForeColor = Color.Green;
             }
 
+            //change number of actors that can be allocated
+            lblAllocatedActors.Text = lblAllocatedActors.Text.Substring(0, lblAllocatedActors.Text.IndexOf('\n') + 1)
+                                    + "0/" + cmbActors.Items.Count.ToString();
+
+
+            lstToChange.Items.Clear();
+            ChangeAllocatedActorsValue();
+
             cmbDubers.ResetText();
             changeBtnToAlloc();
             changeBtnToAddRmv();
 
-            lstToChange.Items.Clear();
             changeBtnRemoveLog();
             changeBtnExport();
 
@@ -126,20 +140,90 @@ namespace Ass_to_Srt_roles_allocator
             btnConvert.Enabled = true;
         }
 
-        private void LoadActors()
+        private void ChangeAllocatedActorsValue()
         {
-            cmbActors.Items.Clear();
-            //in order to properly reset combobox
-            cmbActors.Items.Add("");
+            //change number of actors allocated
+            string defaultLblTxt = lblAllocatedActors.Text;
+            string loadedActorsNum = defaultLblTxt.Substring(defaultLblTxt.IndexOf('/') + 1);
 
-            List<string> actors = new List<string>();
-            foreach (string line in subtitles)
+            int allocActorsNumIndex = defaultLblTxt.LastIndexOf('\n') + 1;
+            defaultLblTxt = defaultLblTxt.Substring(0, allocActorsNumIndex);
+
+            lblAllocatedActors.Text = defaultLblTxt + lstToChange.Items.Count.ToString() + "/" + loadedActorsNum;
+
+
+            List<string> allocatedActors = new List<string>(lstToChange.Items.Cast<string>().ToList());
+            List<string> tempList;
+
+            //separate actors from dubers if any
+            if (allocatedActors.Any(s => s.Contains(RIGHT_ARROW)))
             {
+                tempList = new List<string>(allocatedActors);
+                allocatedActors.Clear();
+
+                foreach (string item in tempList)
+                {
+                    string actor = item.Substring(0, item.IndexOf(RIGHT_ARROW)).Trim();
+
+                    if (!allocatedActors.Contains(actor))
+                        allocatedActors.Add(actor);
+                }
+                tempList.Clear();
+            }
+
+            //change contextMenuStrip items
+            List<string> allActors = new List<string>(cmbActors.Items.Cast<string>().ToList());
+            bool isEmptyActor = false;
+
+            tempList = new List<string>(allocatedActors);
+            allocatedActors.Clear();
+
+            //add not allocated actors to contextMenuStrip
+            foreach (string actor in allActors)
+            {
+                if (!tempList.Contains(actor))
+                {
+                    if (actor != EMPTY_ACTOR)
+                    {
+                        allocatedActors.Add(actor);
+                    }
+                    else isEmptyActor = true;
+                }
+            }
+            tempList.Clear();
+
+
+            allocatedActors.Sort();
+            if (isEmptyActor) allocatedActors.Add(EMPTY_ACTOR);
+
+            ToolStripItem[] menuItems = new ToolStripItem[allocatedActors.Count];
+            for (int i = 0; i < allocatedActors.Count; ++i)
+            {
+                menuItems[i] = new ToolStripMenuItem(allocatedActors[i]);
+                menuItems[i].Click += contextMenuStrip_Click;
+            }
+
+            contextMenuStrip.Items.Clear();
+            contextMenuStrip.Items.AddRange(menuItems);
+        }
+
+        private string LoadActors()
+        {
+            List<string> actors = new List<string>();
+            //in order to properly reset combobox
+            int numOfEmptyActors = 0;
+            int numOfTotalActors = 0;
+            bool atLeastOneEmptyActor = false;
+
+            for (int i = 0; i < subtitles.Count; ++i)
+            {
+                string line = subtitles[i];
+
                 //extract actor 
                 string actor = ExtractActor(line);
 
                 //split actors if multiple for one dialogue
-                if (actor.Contains(';'))
+                if (actor.Contains(GENERAL_SEPARATOR) || actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
                 {
                     string[] splitedActors = SplitActors(actor);
                     foreach (string splitedActor in splitedActors)
@@ -147,40 +231,58 @@ namespace Ass_to_Srt_roles_allocator
                         if (!actors.Contains(splitedActor) && splitedActor != "")
                         {
                             actors.Add(splitedActor);
-                            //ifs in order to properly reset combobox
-                            if (cmbActors.Items.Count == 1)
-                            {
-                                if (cmbActors.Items[0].ToString() == "")
-                                {
-                                    cmbActors.Items.Clear();
-                                }
-                            }
-                            cmbActors.Items.Add(splitedActor);
                         }
                     }
                 }
                 else
                 {
-                    if (!actors.Contains(actor) && actor != "")
+                    if (actor == "")
+                    {
+                        ++numOfEmptyActors;
+                        int actorIndex = AssFormat.GetSpecificFormatIndex(line, AssFormat.Actor);
+                        int afterActorIndex = AssFormat.GetSpecificFormatIndex(line, AssFormat.MarginL) - 1;
+
+                        string modifiedLine = subtitles[i].Substring(0, actorIndex);
+                        modifiedLine += EMPTY_ACTOR;
+                        modifiedLine += subtitles[i].Substring(afterActorIndex);
+                        subtitles[i] = modifiedLine;
+
+                        atLeastOneEmptyActor = true;
+                    }
+                    else if (!actors.Contains(actor))
                     {
                         actors.Add(actor);
-                        //ifs in order to properly reset combobox
-                        if (cmbActors.Items.Count == 1)
-                        {
-                            if (cmbActors.Items[0].ToString() == "")
-                            {
-                                cmbActors.Items.Clear();
-                            }
-                        }
-                        cmbActors.Items.Add(actor);
                     }
                 }
+
+                ++numOfTotalActors;
             }
+
+            cmbActors.Items.Clear();
+            if (actors.Count != 0)
+                cmbActors.Items.AddRange(actors.OrderBy(x => x).ToArray());
+            actors.Clear();
+
+            if (atLeastOneEmptyActor)
+            {
+                cmbActors.Items.Add(EMPTY_ACTOR);
+            }
+
+            return numOfEmptyActors.ToString() + "/" + numOfTotalActors.ToString();
         }
 
         private string[] SplitActors(string actor)
         {
-            string[] splitedActors = actor.Split(';');
+            if (actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
+                foreach (char separator in ACTOR_SEPARATORS)
+                {
+                    if (actor.Contains(separator))
+                    {
+                        actor.Replace(separator, GENERAL_SEPARATOR);
+                    }
+                }
+
+            string[] splitedActors = actor.Split(GENERAL_SEPARATOR);
             int splitLen = splitedActors.Length;
 
             for (int i = 0; i < splitLen; ++i)
@@ -240,7 +342,7 @@ namespace Ass_to_Srt_roles_allocator
 
             //remove ass text formating
             if (removeAssFormating)
-            { 
+            {
                 dialogue = Regex.Replace(dialogue, "{.*?}", string.Empty);
             }
 
@@ -267,7 +369,7 @@ namespace Ass_to_Srt_roles_allocator
             for (int i = 0; i < lstLen; ++i)
             {
                 string currentItem = lstToChange.Items[i].ToString();
-                if (currentItem.StartsWith(actor, StringComparison.OrdinalIgnoreCase) && currentItem.Contains(rightArrow))
+                if (currentItem.StartsWith(actor, StringComparison.OrdinalIgnoreCase) && currentItem.Contains(RIGHT_ARROW))
                 {
                     duber = currentItem.Substring(actor.Length + 3);
                     break;
@@ -285,8 +387,8 @@ namespace Ass_to_Srt_roles_allocator
             int count = 1;
             foreach (string item in lstToChange.Items)
             {
-                string actor = item.Substring(0, item.IndexOf(rightArrow)).Trim();
-                string duber = item.Substring(item.IndexOf(rightArrow) + 1).Trim();
+                string actor = item.Substring(0, item.IndexOf(RIGHT_ARROW)).Trim();
+                string duber = item.Substring(item.IndexOf(RIGHT_ARROW) + 1).Trim();
                 dubersToExport += actor + ":" + duber;
 
                 if (count < lstLen)
@@ -324,13 +426,13 @@ namespace Ass_to_Srt_roles_allocator
                         {
                             lstToChange.Items.Clear();
                         }
-                        lstToChange.Items.Add(actor + " " + rightArrow + " " + duber);
+                        lstToChange.Items.Add(actor + " " + RIGHT_ARROW + " " + duber);
 
                         importedDubersCount++;
                     }
                     else
                     {
-                        report += actor + " " + rightArrow + " " + duber + "\n";
+                        report += actor + " " + RIGHT_ARROW + " " + duber + "\n";
                     }
                 }
             }
@@ -369,7 +471,7 @@ namespace Ass_to_Srt_roles_allocator
                         string[] actors = SplitActors(actor);
 
                         string[] separatedActor = SplitActors(separateActors);
-                        
+
                         if (separatedActor.Intersect(actors).Any())
                         {
                             if (lineNum != 1)
@@ -428,7 +530,6 @@ namespace Ass_to_Srt_roles_allocator
                                 }
                                 else
                                 {
-                                    //find duber for actor
                                     string duber = FindDuberForActor(actor);
                                     if (duber == "")
                                     {
@@ -438,7 +539,7 @@ namespace Ass_to_Srt_roles_allocator
                                     }
                                     else if (duber == "-")
                                     {
-                                        //text
+                                        //special case for Captions
                                         srtSub += duber + " ";
                                     }
                                     else
@@ -485,7 +586,7 @@ namespace Ass_to_Srt_roles_allocator
 
             if (chkSeparateActors.Checked)
             {
-                if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)))
+                if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
                 {
                     if (!chkActorsPerLine.Checked)
                     {
@@ -495,8 +596,8 @@ namespace Ass_to_Srt_roles_allocator
                     // identify every actor per duber
                     foreach (string actorNduber in lstToChange.Items)
                     {
-                        string actor = actorNduber.Substring(0, actorNduber.IndexOf(rightArrow) - 1);
-                        string duber = actorNduber.Substring(actorNduber.IndexOf(rightArrow) + 2);
+                        string actor = actorNduber.Substring(0, actorNduber.IndexOf(RIGHT_ARROW) - 1);
+                        string duber = actorNduber.Substring(actorNduber.IndexOf(RIGHT_ARROW) + 2);
                         if (separateSrtSubs.ContainsKey(duber))
                         {
                             separateSrtSubs[duber] = separateSrtSubs[duber] + ";" + actor;
@@ -550,7 +651,7 @@ namespace Ass_to_Srt_roles_allocator
                         {
                             filePath = Path.Combine(filePath, "[Dubers with Actors] " + fileName);
                         }
-                        else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)))
+                        else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
                         {
                             filePath = Path.Combine(filePath, "[Dubers] " + fileName);
                         }
@@ -573,7 +674,7 @@ namespace Ass_to_Srt_roles_allocator
                         {
                             filePath = path;
                         }
-                        else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)))
+                        else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
                         {
                             filePath = Path.Combine(filePath, "[Dubers] " + fileName + ".srt");
                         }
@@ -598,17 +699,19 @@ namespace Ass_to_Srt_roles_allocator
         {
             //remove only actors if any
             if (lstToChange.Items.Count > 0)
-                if (lstToChange.Items.Cast<string>().Any(s => !s.Contains(rightArrow)))
+                if (lstToChange.Items.Cast<string>().Any(s => !s.Contains(RIGHT_ARROW)))
                 {
                     List<string> items = lstToChange.Items.OfType<string>().ToList();
                     foreach (string toRemove in items)
                     {
-                        if (!toRemove.Contains(rightArrow))
+                        if (!toRemove.Contains(RIGHT_ARROW))
                             lstToChange.Items.Remove(toRemove);
                     }
                 }
 
-            lstToChange.Items.Add(cmbActors.Text + " " + rightArrow + " " + cmbDubers.Text.Trim());
+            lstToChange.Items.Add(cmbActors.Text + " " + RIGHT_ARROW + " " + cmbDubers.Text.Trim());
+
+            ChangeAllocatedActorsValue();
 
             changeBtnToAlloc();
             changeBtnExport();
@@ -616,6 +719,17 @@ namespace Ass_to_Srt_roles_allocator
 
             changeBtnRemoveLog();
             lblConvertionStatus.ForeColor = Color.Red;
+        }
+
+        private void btnAddDuber_Click(object sender, EventArgs e)
+        {
+            if (cmbDubers.Items.Count == 1)
+            {
+                if (cmbDubers.Items[0].ToString() == "") cmbDubers.Items.Clear();
+            }
+            cmbDubers.Items.Add(cmbDubers.Text);
+            changeBtnToAddRmv();
+            changeBtnSaveDeleteDubers();
         }
 
         private void btnRemoveDuber_Click(object sender, EventArgs e)
@@ -635,14 +749,14 @@ namespace Ass_to_Srt_roles_allocator
             changeBtnSaveDeleteDubers();
         }
 
-        private void btnAddDuber_Click(object sender, EventArgs e)
+        private void btnSaveDeleteDubers_Click(object sender, EventArgs e)
         {
-            if (cmbDubers.Items.Count == 1)
-            {
-                if (cmbDubers.Items[0].ToString() == "") cmbDubers.Items.Clear();
-            }
-            cmbDubers.Items.Add(cmbDubers.Text);
-            changeBtnToAddRmv();
+            //update settings string with current duberlist
+            Settings.Default.Dubers = string.Join(";", cmbDubers.Items.OfType<String>()
+                                                                      .Select(item => item.ToString())
+                                                                      .Where(s => !string.IsNullOrEmpty(s)));
+            Settings.Default.Save();
+
             changeBtnSaveDeleteDubers();
         }
 
@@ -661,22 +775,13 @@ namespace Ass_to_Srt_roles_allocator
                 lstToChange.Items.Clear();
             }
 
+            ChangeAllocatedActorsValue();
+
             changeBtnRemoveLog();
             changeBtnToAlloc();
             changeBtnExport();
             changeChkSeparateActors();
             lblConvertionStatus.ForeColor = Color.Red;
-        }
-
-        private void btnSaveDeleteDubers_Click(object sender, EventArgs e)
-        {
-            //update settings string with current duberlist
-            Settings.Default.Dubers = string.Join(";", cmbDubers.Items.OfType<String>()
-                                                                      .Select(item => item.ToString())
-                                                                      .Where(s => !string.IsNullOrEmpty(s)));
-            Settings.Default.Save();
-
-            changeBtnSaveDeleteDubers();
         }
 
         private void btnImport_Click(object sender, EventArgs e)
@@ -701,6 +806,9 @@ namespace Ass_to_Srt_roles_allocator
                     MessageBox.Show(outputMessage);
                 }
             }
+
+            ChangeAllocatedActorsValue();
+
             changeBtnExport();
             changeBtnToAlloc();
             changeBtnRemoveLog();
@@ -711,7 +819,7 @@ namespace Ass_to_Srt_roles_allocator
         private void btnExport_Click(object sender, EventArgs e)
         {
             saveFileDialog.Title = "Choose where to export";
-            string fileName = toolTip.GetToolTip(lblFilePath);
+            string fileName = toolTipFileName.GetToolTip(lblFilePath);
             fileName = fileName.Substring(0, fileName.Length - 4);
             saveFileDialog.FileName = "(Actors)" + fileName + ".txt";
             saveFileDialog.Filter = "Text file|*.txt";
@@ -736,12 +844,12 @@ namespace Ass_to_Srt_roles_allocator
             {
                 //remove actors -> dubers if any
                 if (lstToChange.Items.Count > 0)
-                    if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)))
+                    if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
                     {
                         List<string> items = lstToChange.Items.OfType<string>().ToList();
                         foreach (string toRemove in items)
                         {
-                            if (toRemove.Contains(rightArrow))
+                            if (toRemove.Contains(RIGHT_ARROW))
                                 lstToChange.Items.Remove(toRemove);
                         }
                     }
@@ -752,6 +860,8 @@ namespace Ass_to_Srt_roles_allocator
                     if (!lstToChange.Items.Contains(actor))
                         lstToChange.Items.Add(actor.ToString());
                 }
+
+                ChangeAllocatedActorsValue();
 
                 changeBtnToAlloc();
                 changeBtnExport();
@@ -792,6 +902,18 @@ namespace Ass_to_Srt_roles_allocator
                 }
             }
         }
+
+        private void contextMenuStrip_Click(object sender, EventArgs e)
+        {
+            //determine which item clicked and put that option in cmbActors
+            if (sender == null) return;
+            ToolStripMenuItem selectedItem = sender as ToolStripMenuItem;
+
+            if (selectedItem != null)
+            {
+                cmbActors.SelectedIndex = cmbActors.Items.IndexOf(selectedItem.Text);
+            }
+        }
         #endregion
 
         #region Events to change buttons
@@ -826,7 +948,7 @@ namespace Ass_to_Srt_roles_allocator
                 chkActorsPerLine.Enabled = false;
                 chkActorsPerLine.Checked = false;
             }
-            else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)))
+            else if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
             {
                 chkActorsPerLine.Enabled = true;
             }
@@ -846,7 +968,18 @@ namespace Ass_to_Srt_roles_allocator
             if (cmbActors.Text != "" && cmbDubers.Text != "" && !Regex.IsMatch(cmbDubers.Text, @"^\s*$"))
             {
                 //check if actor were added before to list of changes
-                if (!lstToChange.Items.Cast<string>().Any(item => item.StartsWith(cmbActors.Text, StringComparison.OrdinalIgnoreCase) && item.Contains(rightArrow)))
+                if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)))
+                {
+                    if (!lstToChange.Items.Cast<string>().Any(item => item.Substring(0, item.IndexOf(RIGHT_ARROW) - 1)
+                                                                          .Equals(cmbActors.Text, StringComparison.OrdinalIgnoreCase)
+                                                                   && item.Substring(item.IndexOf(RIGHT_ARROW) + 2)
+                                                                          .Equals(cmbDubers.Text, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        btnToAlloc.Enabled = true;
+                        return;
+                    }
+                }
+                else
                 {
                     btnToAlloc.Enabled = true;
                     return;
@@ -878,7 +1011,7 @@ namespace Ass_to_Srt_roles_allocator
         {
             if (lstToChange.Items.Count > 0)
             {
-                if (!lstToChange.Items.Cast<string>().Any(s => !s.Contains(rightArrow)))
+                if (!lstToChange.Items.Cast<string>().Any(s => !s.Contains(RIGHT_ARROW)))
                     btnExport.Enabled = true;
                 else btnExport.Enabled = false;
             }
@@ -919,7 +1052,7 @@ namespace Ass_to_Srt_roles_allocator
             {
                 chkSeparateActors.Enabled = true;
 
-                if (lstToChange.Items.Cast<string>().Any(s => s.Contains(rightArrow)) && chkSeparateActors.Checked)
+                if (lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW)) && chkSeparateActors.Checked)
                     chkActorsPerLine.Enabled = true;
                 else
                 {
