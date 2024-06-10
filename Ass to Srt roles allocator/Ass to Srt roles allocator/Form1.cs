@@ -18,7 +18,7 @@ namespace Ass_to_Srt_roles_allocator
         string path = "";
         const string EMPTY_ACTOR = "EMPTY ACTOR";
         const string RIGHT_ARROW = "→";
-        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|' };
+        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|', '\\' };
         const char GENERAL_SEPARATOR = ';';
         List<string> subtitles;
 
@@ -278,7 +278,7 @@ namespace Ass_to_Srt_roles_allocator
                 {
                     if (actor.Contains(separator))
                     {
-                        actor.Replace(separator, GENERAL_SEPARATOR);
+                        actor = actor.Replace(separator, GENERAL_SEPARATOR);
                     }
                 }
 
