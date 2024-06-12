@@ -83,8 +83,8 @@ Click to `Convert` button
 
 ---
 ### Import/Export file sytax
-```
 Can be imported with drag and drop to `To change` box
+```
 Actor 1:Changed actor 1
 Actor 2:Changed actor 2
 Actor 3:Multiple actors
