@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ASS to SRT Converter.exe" size="35328">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ASS to SRT Converter.exe" size="39424">
       <assemblyIdentity name="ASS to SRT Converter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>6drpAdcNgrNM90OW5cjG9OYGXd7uCbe13wtscTdi4OE=</dsig:DigestValue>
+        <dsig:DigestValue>i/3fuAJMZDIZXQzpoDuz/ZGrK8b4I/J3vixb522hDJc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

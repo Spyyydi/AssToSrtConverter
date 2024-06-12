@@ -53,8 +53,8 @@
             this.chkActorsPerLine = new System.Windows.Forms.CheckBox();
             this.lblAllocatedActors = new System.Windows.Forms.Label();
             this.toolTipActorsLoaded = new System.Windows.Forms.ToolTip(this.components);
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolTipAllocatedActors = new System.Windows.Forms.ToolTip(this.components);
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -160,6 +160,7 @@
             // 
             // lstToChange
             // 
+            this.lstToChange.AllowDrop = true;
             this.lstToChange.DisplayMember = "String";
             this.lstToChange.FormattingEnabled = true;
             this.lstToChange.Location = new System.Drawing.Point(6, 13);
@@ -170,6 +171,10 @@
             this.lstToChange.TabStop = false;
             this.lstToChange.ValueMember = "String";
             this.lstToChange.SelectedIndexChanged += new System.EventHandler(this.lstToChange_SelectedIndexChanged);
+            this.lstToChange.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstToChange_DragDrop);
+            this.lstToChange.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstToChange_DragEnter);
+            this.lstToChange.DragOver += new System.Windows.Forms.DragEventHandler(this.lstToChange_DragOver);
+            this.lstToChange.DragLeave += new System.EventHandler(this.lstToChange_DragLeave);
             // 
             // btnRemoveLog
             // 
@@ -293,11 +298,9 @@
             // 
             this.contextMenuStrip.MaximumSize = new System.Drawing.Size(0, 300);
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.ShowImageMargin = false;
             this.contextMenuStrip.ShowItemToolTips = false;
-            this.contextMenuStrip.Size = new System.Drawing.Size(36, 4);
+            this.contextMenuStrip.Size = new System.Drawing.Size(181, 26);
             this.contextMenuStrip.Text = "Not allocated actors";
-            this.contextMenuStrip.Click += new System.EventHandler(this.contextMenuStrip_Click);
             // 
             // Form1
             // 
@@ -331,6 +334,8 @@
             this.Text = "ASS to SRT";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
+            this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -362,8 +367,9 @@
         private System.Windows.Forms.CheckBox chkActorsPerLine;
         private System.Windows.Forms.Label lblAllocatedActors;
         private System.Windows.Forms.ToolTip toolTipActorsLoaded;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripWithScroll1;
         private System.Windows.Forms.ToolTip toolTipAllocatedActors;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     }
 }
 

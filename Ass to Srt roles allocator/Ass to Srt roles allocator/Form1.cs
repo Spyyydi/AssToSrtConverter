@@ -18,9 +18,11 @@ namespace Ass_to_Srt_roles_allocator
         string path = "";
         const string EMPTY_ACTOR = "EMPTY ACTOR";
         const string RIGHT_ARROW = "→";
-        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|', '\\' };
+        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|', '\\', '\n' };
         const char GENERAL_SEPARATOR = ';';
         List<string> subtitles;
+
+        bool isDragging = false;
 
         public Form1()
         {
@@ -422,7 +424,7 @@ namespace Ass_to_Srt_roles_allocator
                     //find actor in combobox if found add to listbox if not add to report
                     if (cmbActors.Items.Contains(actor))
                     {
-                        if (dubersCount == 1)
+                        if (importedDubersCount == 0)
                         {
                             lstToChange.Items.Clear();
                         }
@@ -451,6 +453,32 @@ namespace Ass_to_Srt_roles_allocator
             }
 
             return report;
+        }
+
+        private void ImportActorsFile(string actorsNdubersFilePath)
+        {
+            int fileNameStartIndex = actorsNdubersFilePath.LastIndexOf('\\') + 1;
+            string filePath = actorsNdubersFilePath.Substring(0, fileNameStartIndex);
+            string fileName = actorsNdubersFilePath.Substring(fileNameStartIndex);
+
+            string outputMessage = ConvertImportedFileToList(filePath, fileName);
+            if (outputMessage == "Error")
+            {
+                MessageBox.Show("Failed to import file");
+            }
+            else if (outputMessage != "")
+            {
+                // Custom MessageBox.Show()
+                new ShowLongMessage(outputMessage).ShowDialog();
+            }
+
+            ChangeAllocatedActorsValue();
+
+            changeBtnExport();
+            changeBtnToAlloc();
+            changeBtnRemoveLog();
+            changeChkSeparateActors();
+            lblConvertionStatus.ForeColor = Color.Red;
         }
 
         private string ConvertAssToSrt(bool removeAssFormating, bool allocateActors, string separateActors)
@@ -792,28 +820,8 @@ namespace Ass_to_Srt_roles_allocator
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                int fileNameStartIndex = openFileDialog.FileName.LastIndexOf('\\') + 1;
-                string filePath = openFileDialog.FileName.Substring(0, fileNameStartIndex);
-                string fileName = openFileDialog.FileName.Substring(fileNameStartIndex);
-
-                string outputMessage = ConvertImportedFileToList(filePath, fileName);
-                if (outputMessage == "Error")
-                {
-                    MessageBox.Show("Failed to import file");
-                }
-                else if (outputMessage != "")
-                {
-                    MessageBox.Show(outputMessage);
-                }
+                ImportActorsFile(openFileDialog.FileName);
             }
-
-            ChangeAllocatedActorsValue();
-
-            changeBtnExport();
-            changeBtnToAlloc();
-            changeBtnRemoveLog();
-            changeChkSeparateActors();
-            lblConvertionStatus.ForeColor = Color.Red;
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -833,7 +841,7 @@ namespace Ass_to_Srt_roles_allocator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex);
+                    MessageBox.Show(ex.Message);
                 }
             }
         }
@@ -1089,16 +1097,84 @@ namespace Ass_to_Srt_roles_allocator
         #region Drag and Drop
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
+            lstToChange.BackColor = SystemColors.Window;
+            this.BackColor = SystemColors.Control;
+
             string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             if (fileList[0].Substring(fileList[0].Length - 4).ToLower() == ".ass")
             {
                 ImportSubFile(fileList[0]);
             }
+
+            isDragging = false;
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+                this.BackColor = Color.LightBlue;
+                isDragging = true;
+            }
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void Form1_DragOver(object sender, DragEventArgs e)
+        {
+            if (isDragging && !lstToChange.ClientRectangle.Contains(lstToChange.PointToClient(new Point(e.X, e.Y))))
+            {
+                this.BackColor = Color.LightBlue;
+                lstToChange.BackColor = SystemColors.Window;
+            }
+        }
+
+        private void Form1_DragLeave(object sender, EventArgs e)
+        {
+            this.BackColor = SystemColors.Control;
+            isDragging = false;
+        }
+
+        private void lstToChange_DragDrop(object sender, DragEventArgs e)
+        {
+            lstToChange.BackColor = SystemColors.Window;
+            this.BackColor = SystemColors.Control;
+
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (fileList[0].Substring(fileList[0].Length - 4).ToLower() == ".txt")
+            {
+                ImportActorsFile(fileList[0]);
+            }
+
+            isDragging = false;
+        }
+
+        private void lstToChange_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+                lstToChange.BackColor = Color.LightBlue;
+                isDragging = true;
+            }
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void lstToChange_DragOver(object sender, DragEventArgs e)
+        {
+            if (isDragging && lstToChange.ClientRectangle.Contains(lstToChange.PointToClient(new Point(e.X, e.Y))))
+            {
+                lstToChange.BackColor = Color.LightBlue;
+                this.BackColor = SystemColors.Control;
+            }
+        }
+
+        private void lstToChange_DragLeave(object sender, EventArgs e)
+        {
+            lstToChange.BackColor = SystemColors.Window;
+            isDragging = false;
         }
         #endregion
     }
