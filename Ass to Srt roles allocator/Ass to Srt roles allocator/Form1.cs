@@ -111,7 +111,6 @@ namespace Ass_to_Srt_roles_allocator
 
             string emptyActors = LoadActors();
             toolTipActorsLoaded.SetToolTip(lblLoadStatus, "Empty actors: " + emptyActors);
-            toolTipAllocatedActors.SetToolTip(lblAllocatedActors, "Right click to see not allocated actors\nyou can select any by pressing on it");
             if (cmbActors.Items.Count < 1)
             {
                 lblLoadStatus.ForeColor = Color.Red;

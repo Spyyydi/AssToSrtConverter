@@ -6,10 +6,10 @@ C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass to Srt roles allocator.csproj.AssemblyReference.cache
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass_to_Srt_roles_allocator.Form1.resources
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass_to_Srt_roles_allocator.Properties.Resources.resources
+C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass_to_Srt_roles_allocator.ShowLongMessage.resources
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass to Srt roles allocator.csproj.GenerateResource.cache
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass to Srt roles allocator.csproj.CoreCompileInputs.cache
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.exe.manifest
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.application
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.exe
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.pdb
-C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass_to_Srt_roles_allocator.ShowLongMessage.resources
