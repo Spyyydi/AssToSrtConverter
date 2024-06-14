@@ -207,6 +207,9 @@ namespace Ass_to_Srt_roles_allocator
 
             contextMenuStrip.Items.Clear();
             contextMenuStrip.Items.AddRange(menuItems);
+
+            toolTipAllocatedActors.SetToolTip(lblAllocatedActors, 
+                                            $"Right click to see/select not allocated actors ({contextMenuStrip.Items.Count})");
         }
 
         private string LoadActors()
