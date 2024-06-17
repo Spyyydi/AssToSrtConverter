@@ -514,8 +514,8 @@ namespace Ass_to_Srt_roles_allocator
 
                             if (allocateActors)
                             {
-                                if (actor.Contains(";"))
-                                    actor = actor.Replace(";", ",");
+                                if (actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
+                                    actor = string.Join(", ", actors);
                                 srtSub += "[" + actor + "] ";
                             }
 
@@ -534,7 +534,7 @@ namespace Ass_to_Srt_roles_allocator
                                 //Extract actor
                                 string actor = ExtractActor(line);
                                 //if multiple actors for the subtitle line
-                                if (actor.Contains(';'))
+                                if (actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
                                 {
                                     //split actors and find duber for each actor (if duber not found then put actor instead)
                                     string[] actors = SplitActors(actor);
