@@ -64,7 +64,7 @@ namespace Ass_to_Srt_roles_allocator
 
                     if (isDialogue && !subtitles.Contains(lineToCompare))
                     {
-                        if (!IsVectorDrawing(lineToCompare))
+                        if (!IsVectorDrawing(lineToCompare) && ExtractDialogue(lineToCompare, false) != "")
                         {
                             subtitles.Add(lineToCompare);
                         }
@@ -344,6 +344,11 @@ namespace Ass_to_Srt_roles_allocator
             //extract dialogue
             string dialogue = line.Substring(AssFormat.GetSpecificFormatIndex(line, AssFormat.Text));
 
+            if(string.IsNullOrWhiteSpace(dialogue))
+            {
+                return "";
+            }
+
             //remove ass text formating
             if (removeAssFormating)
             {
@@ -555,8 +560,8 @@ namespace Ass_to_Srt_roles_allocator
 
                                     if (atLeastOneDuberWritten)
                                         srtSub += "(" + dubers.Substring(0, dubers.LastIndexOf(',')) + ") ";
-                                    else
-                                        srtSub += "[" + dubers.Substring(0, dubers.LastIndexOf(',')) + "] ";
+                                    //(remove comment below if you want actors to be placed anyways whether there are alocated dubers or not)
+                                    //else srtSub += "[" + dubers.Substring(0, dubers.LastIndexOf(',')) + "] ";
                                 }
                                 else
                                 {
@@ -565,7 +570,7 @@ namespace Ass_to_Srt_roles_allocator
                                     {
                                         //duber not found
                                         //(remove comment below if you want actors to be placed anyways whether there are alocated dubers or not)
-                                        srtSub += "[" + actor + "] ";
+                                        //srtSub += "[" + actor + "] ";
                                     }
                                     else if (duber == "-")
                                     {

@@ -367,7 +367,6 @@
         private System.Windows.Forms.CheckBox chkActorsPerLine;
         private System.Windows.Forms.Label lblAllocatedActors;
         private System.Windows.Forms.ToolTip toolTipActorsLoaded;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripWithScroll1;
         private System.Windows.Forms.ToolTip toolTipAllocatedActors;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     }
