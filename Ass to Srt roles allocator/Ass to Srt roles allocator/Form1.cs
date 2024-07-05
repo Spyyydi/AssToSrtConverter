@@ -18,7 +18,7 @@ namespace Ass_to_Srt_roles_allocator
         string path = "";
         const string EMPTY_ACTOR = "EMPTY ACTOR";
         const string RIGHT_ARROW = "→";
-        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|', '\\', '\n' };
+        readonly char[] ACTOR_SEPARATORS = { '/', '&', '|', '\\', '\n', ';' };
         const char GENERAL_SEPARATOR = ';';
         List<string> subtitles;
 
@@ -207,7 +207,7 @@ namespace Ass_to_Srt_roles_allocator
             contextMenuStrip.Items.Clear();
             contextMenuStrip.Items.AddRange(menuItems);
 
-            toolTipAllocatedActors.SetToolTip(lblAllocatedActors, 
+            toolTipAllocatedActors.SetToolTip(lblAllocatedActors,
                                             $"Right click to see/select not allocated actors ({contextMenuStrip.Items.Count})");
         }
 
@@ -344,7 +344,7 @@ namespace Ass_to_Srt_roles_allocator
             //extract dialogue
             string dialogue = line.Substring(AssFormat.GetSpecificFormatIndex(line, AssFormat.Text));
 
-            if(string.IsNullOrWhiteSpace(dialogue))
+            if (string.IsNullOrWhiteSpace(dialogue))
             {
                 return "";
             }
@@ -488,24 +488,24 @@ namespace Ass_to_Srt_roles_allocator
             lblConvertionStatus.ForeColor = Color.Red;
         }
 
-        private string ConvertAssToSrt(bool removeAssFormating, bool allocateActors, string separateActors)
+        private string ConvertAssToSrt(bool removeAssFormating, bool allocateActors, string separateActorsPerFile)
         {
             string srtSub = "";
 
             //convert from ass to srt
             int lineNum = 1;
             int subLen = subtitles.Count;
-            bool isActorsAllocated = lstToChange.Items.Count > 0;
+            bool isDubbersAllocated = lstToChange.Items.Cast<string>().Any(s => s.Contains(RIGHT_ARROW));
 
             if (subLen > 0)
                 foreach (string line in subtitles)
                 {
-                    if (separateActors != "")
+                    if (separateActorsPerFile != "")
                     {
                         string actor = ExtractActor(line);
                         string[] actors = SplitActors(actor);
 
-                        string[] separatedActor = SplitActors(separateActors);
+                        string[] separatedActor = SplitActors(separateActorsPerFile);
 
                         if (separatedActor.Intersect(actors).Any())
                         {
@@ -534,19 +534,20 @@ namespace Ass_to_Srt_roles_allocator
 
                         if (allocateActors)
                         {
-                            if (isActorsAllocated)
+                            //Extract actor
+                            string actor = ExtractActor(line);
+                            //if multiple actors for the subtitle line
+                            if (actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
                             {
-                                //Extract actor
-                                string actor = ExtractActor(line);
-                                //if multiple actors for the subtitle line
-                                if (actor.Any(c => ACTOR_SEPARATORS.Contains(c)))
-                                {
-                                    //split actors and find duber for each actor (if duber not found then put actor instead)
-                                    string[] actors = SplitActors(actor);
-                                    string dubers = "";
-                                    bool atLeastOneDuberWritten = false;
+                                //split actors and find duber for each actor (if duber not found then put actor instead)
+                                string[] actors = SplitActors(actor);
+                                string dubers = "";
+                                bool atLeastOneDuberWritten = false;
+                                bool atLeastOneActorWritten = false;
 
-                                    foreach (string s in actors)
+                                foreach (string s in actors)
+                                {
+                                    if (isDubbersAllocated)
                                     {
                                         string duber = FindDuberForActor(s);
                                         if (duber == "") dubers += s;
@@ -557,20 +558,29 @@ namespace Ass_to_Srt_roles_allocator
                                         }
                                         dubers += ", ";
                                     }
-
-                                    if (atLeastOneDuberWritten)
-                                        srtSub += "(" + dubers.Substring(0, dubers.LastIndexOf(',')) + ") ";
-                                    //(remove comment below if you want actors to be placed anyways whether there are alocated dubers or not)
-                                    //else srtSub += "[" + dubers.Substring(0, dubers.LastIndexOf(',')) + "] ";
+                                    else
+                                    {
+                                        if (lstToChange.Items.Contains(s))
+                                        {
+                                            dubers += s + ", ";
+                                            atLeastOneActorWritten = true;
+                                        }
+                                    }
                                 }
-                                else
+
+                                if (atLeastOneDuberWritten)
+                                    srtSub += "(" + dubers.Substring(0, dubers.LastIndexOf(',')) + ") ";
+                                else if (atLeastOneActorWritten)
+                                    srtSub += "[" + dubers.Substring(0, dubers.LastIndexOf(',')) + "] ";
+                            }
+                            else
+                            {
+                                if (isDubbersAllocated)
                                 {
                                     string duber = FindDuberForActor(actor);
                                     if (duber == "")
                                     {
-                                        //duber not found
-                                        //(remove comment below if you want actors to be placed anyways whether there are alocated dubers or not)
-                                        //srtSub += "[" + actor + "] ";
+                                        //dubber not found
                                     }
                                     else if (duber == "-")
                                     {
@@ -581,6 +591,11 @@ namespace Ass_to_Srt_roles_allocator
                                     {
                                         srtSub += "(" + duber + ") ";
                                     }
+                                }
+                                else
+                                {
+                                    if (lstToChange.Items.Contains(actor))
+                                        srtSub += "[" + actor + "] ";
                                 }
                             }
                         }
@@ -616,7 +631,7 @@ namespace Ass_to_Srt_roles_allocator
         {
             const bool removeAssFormating = true;
             bool allocateActors = true;
-            const string separateActors = "";
+            const string separateActorsPerFile = "";
             Dictionary<string, string> separateSrtSubs = new Dictionary<string, string>();
 
             if (chkSeparateActors.Checked)
@@ -661,8 +676,8 @@ namespace Ass_to_Srt_roles_allocator
                 }
             }
 
-            // it doesn't matter state of allocateActors if previous "if" is entered
-            string srtSub = ConvertAssToSrt(removeAssFormating, allocateActors, separateActors);
+            allocateActors = lstToChange.Items.Count > 0;
+            string srtSub = ConvertAssToSrt(removeAssFormating, allocateActors, separateActorsPerFile);
 
             if (srtSub == "")
             {
@@ -891,9 +906,9 @@ namespace Ass_to_Srt_roles_allocator
         {
             const bool removeAssFormating = false;
             const bool allocateActors = false;
-            const string separateActors = "";
+            const string separateActorsPerFile = "";
 
-            string srtSub = ConvertAssToSrt(removeAssFormating, allocateActors, separateActors);
+            string srtSub = ConvertAssToSrt(removeAssFormating, allocateActors, separateActorsPerFile);
 
             if (srtSub == "")
             {
