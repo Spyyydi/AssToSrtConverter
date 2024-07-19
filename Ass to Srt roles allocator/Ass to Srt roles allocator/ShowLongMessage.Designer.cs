@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowLongMessage));
             this.richTxtMessage = new System.Windows.Forms.RichTextBox();
             this.btnClose = new System.Windows.Forms.Button();
+            this.btnCopy = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTxtMessage
@@ -41,19 +42,30 @@
             this.richTxtMessage.Name = "richTxtMessage";
             this.richTxtMessage.ReadOnly = true;
             this.richTxtMessage.Size = new System.Drawing.Size(400, 300);
-            this.richTxtMessage.TabIndex = 0;
+            this.richTxtMessage.TabIndex = 2;
+            this.richTxtMessage.TabStop = false;
             this.richTxtMessage.Text = "";
             // 
             // btnClose
             // 
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(150, 302);
+            this.btnClose.Location = new System.Drawing.Point(250, 302);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(100, 25);
-            this.btnClose.TabIndex = 1;
-            this.btnClose.Text = "Ok";
+            this.btnClose.TabIndex = 0;
+            this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(50, 302);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(100, 25);
+            this.btnCopy.TabIndex = 1;
+            this.btnCopy.Text = "Copy to clipboard";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // ShowLongMessage
             // 
@@ -63,6 +75,7 @@
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(400, 329);
             this.ControlBox = false;
+            this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.richTxtMessage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -83,5 +96,6 @@
 
         private System.Windows.Forms.RichTextBox richTxtMessage;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnCopy;
     }
 }
