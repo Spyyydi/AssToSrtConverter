@@ -103,10 +103,13 @@ Text:Changed Text
 
 ---
 ## Actors synchronization
+Takes actors from ASS file on the right side and allocates them in ASS file on the left side.
 ![filesLoaded_syncTab](images/filesLoaded_syncTab.jpg)
 
-Takes actors from ASS file on the right side and allocates them in ASS file on the left side.<br><br>
-
-![synced_syncTab](images/synced_syncTab.jpg)
+<br>
 
 Not allocated actors written in report box with number of line in ASS file and timing of the text.
+![synced_syncTab](images/synced_syncTab.jpg)
+
+
+`Open report` button opens report in larger window with option to copy report to clipboard.
