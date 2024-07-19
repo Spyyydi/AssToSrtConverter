@@ -1,10 +1,14 @@
 # AssToSrtConverter
-Convert from ASS format to SRT format with actors allocation option
+Convert from ASS format to SRT format with actors allocation option<br>
+Allocate actors from one ASS file to another
 
 ## Preview
-![at_start](images/at_start.jpg)
+![at_start_convertTab](images/at_start_convertTab.jpg) ![at_start_syncTab](images/at_start_syncTab.jpg)
 
-Converted srt files saved in same path as initial ass file
+Converted srt files saved in same path as initial ass file<br>
+- [Convert options](#convert-options)
+- [Actors synchronization](#actors-synchronization)
+<br>
 
 ---
 ## Functionality
@@ -16,27 +20,32 @@ Converted srt files saved in same path as initial ass file
 - Shows how many subtitles are without actors (To see move cursor to `Actors loaded` label)
 <br>
   
-- Save new actors (Saved by clicking on + button)
+- Save new actors (Added/removed to list by clicking on `+`/`-` button. After actors added/removed `Save` button saves changes)
 - Import or Export new actors attached to old actors ([Import/Export file sytax](#importexport-file-sytax))
+<br>
 
-### Convert options
+- Synchronize actors of one ASS file with actors of another ASS file
+- Load synchronized ASS file to converter
+- Save synchronized ASS file
+
+## Convert options
 After selecting or dragging and dropping ass file 
 
 ---
-#### Option №1 (Default convertion)
+### Option №1 (Default convertion)
 Click to `Convert` button
 
 ---
-#### Option №2 (Convertion without removing text formatting)
+### Option №2 (Convertion without removing text formatting)
 Double click to `Converted` label 
 (Clipboard will be overwritten with `Converted` text)
 
 ---
-#### Options with Actors
-![actors](images/actors.jpg)
+### Options with Actors
+![actorsAlloced_convertTab](images/actorsAlloced_convertTab.jpg)
 
 ---
-##### Option №3 (Convert with actors written on each text line)
+#### Option №3 (Convert with actors written on each text line)
 Double click to `Actors loaded` label
 (Clipboard will be overwritten with `Actors loaded` text)
 
@@ -44,18 +53,18 @@ Double click to `Actors loaded` label
 Click to `Convert` button
 
 ---
-##### Option №4 (Convert to separate srt files for each actor)
+#### Option №4 (Convert to separate srt files for each actor)
 Same as in Option №3 but select `Separate SRT` checkbox
 
 
 Click to `Convert` button
 
 ---
-#### Options with replacing actors with new actors
-![changed_actors](images/changed_actors.jpg)
+### Options with replacing actors with new actors
+![changedActorsAlloced_convertTab](images/changedActorsAlloced_convertTab.jpg)
 
 ---
-##### Option №5 (Convert with new actors written on each text line)
+#### Option №5 (Convert with new actors written on each text line)
 Select actor from loaded actors
 
 
@@ -68,21 +77,21 @@ Click to button with arrow.
 After needed actors allocated click to `Convert` button
 
 ---
-##### Option №6 (Convert to separate srt files for each new actor)
+#### Option №6 (Convert to separate srt files for each new actor)
 Same as in Option №5 but select `Separate SRT` checkbox
 
 
 Click to `Convert` button
 
 ---
-##### Option №7 (Convert to separate srt files for each new actor with old actors written on each text line)
+#### Option №7 (Convert to separate srt files for each new actor with old actors written on each text line)
 Same as in option №6 but select `Actors per line` checkbox
 
 
 Click to `Convert` button
 
 ---
-### Import/Export file sytax
+## Import/Export file sytax
 Can be imported with drag and drop to `To change` box
 ```
 Actor 1:Changed actor 1
@@ -91,3 +100,13 @@ Actor 3:Multiple actors
 Actor 4:Multiple actors
 Text:Changed Text
 ```
+
+---
+## Actors synchronization
+![filesLoaded_syncTab](images/filesLoaded_syncTab.jpg)
+
+Takes actors from ASS file on the right side and allocates them in ASS file on the left side.<br><br>
+
+![synced_syncTab](images/synced_syncTab.jpg)
+
+Not allocated actors written in report box with number of line in ASS file and timing of the text.
