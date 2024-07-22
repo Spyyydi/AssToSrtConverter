@@ -103,6 +103,8 @@ Text:Changed Text
 
 ---
 ## Actors synchronization
+**There can be wrong allocations so you need to check manually for correctness of allocated actors**
+
 Takes actors from ASS file on the right side and allocates them in ASS file on the left side.
 ![filesLoaded_syncTab](images/filesLoaded_syncTab.jpg)
 
