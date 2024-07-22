@@ -60,7 +60,7 @@ namespace Ass_to_Srt_roles_allocator
             if (!success)
             {
                 if (isTried)
-                    MessageBox.Show($"Failed to copy report to clipboard after {retries} attempts");
+                    MessageBox.Show($"Failed to copy report to clipboard after {5 - retries} attempts");
             }
             else
             {

@@ -797,51 +797,73 @@ namespace Ass_to_Srt_roles_allocator
         {
             int beforeActor = AssFormat.GetSpecificFormatIndex(lineToReplaceActor, AssFormat.Actor);
             int afterActor = AssFormat.GetSpecificFormatIndex(lineToReplaceActor, AssFormat.MarginL) - 1;
-            
+
             return lineToReplaceActor.Substring(0, beforeActor) + actor + lineToReplaceActor.Substring(afterActor);
         }
 
-        private string SyncActor(string line)
+        private string SyncActor(string line, string nextLine)
         {
-            int index = assWithActors.FindIndex(s => AssFormat.GetTimeKey(line, AssFormat.Start) < AssFormat.GetTimeKey(s, AssFormat.End));
+            const bool withMs = true;
+
+            int lineStartTimeWithMs = AssFormat.GetTimeKey(line, AssFormat.Start, withMs);
+            int lineEndTimeWithMs = AssFormat.GetTimeKey(line, AssFormat.End, withMs);
+
+            int index = assWithActors.FindIndex(s => lineStartTimeWithMs == AssFormat.GetTimeKey(s, AssFormat.Start, withMs)
+                                                  && lineEndTimeWithMs == AssFormat.GetTimeKey(s, AssFormat.End, withMs));
 
             if (index != -1)
             {
-                if (index + 1 < assWithActors.Count)
+                return ReplaceActor(line, ExtractActor(assWithActors[index]));
+            }
+            else
+            {
+                index = assWithActors.FindIndex(s => lineStartTimeWithMs < AssFormat.GetTimeKey(s, AssFormat.End, withMs));
+
+                if (index != -1)
                 {
-                    if (AssFormat.GetTimeKey(line, AssFormat.End) <= AssFormat.GetTimeKey(assWithActors[index + 1], AssFormat.Start))
+                    if (index + 1 < assWithActors.Count)
                     {
-                        return ReplaceActor(line, ExtractActor(assWithActors[index]));
+                        if (lineEndTimeWithMs <= AssFormat.GetTimeKey(assWithActors[index + 1], AssFormat.Start, withMs))
+                        {
+                            int lineStartTime = AssFormat.GetTimeKey(line, AssFormat.Start, !withMs);
+
+                            if (lineStartTime >= AssFormat.GetTimeKey(assWithActors[index], AssFormat.Start, !withMs))
+                            {
+                                return ReplaceActor(line, ExtractActor(assWithActors[index]));
+                            }
+
+                            return "";
+                        }
+                        else
+                        {
+                            //origAss line may contain multiple sync options
+                            //if all options have same actors synchronize
+                            string initialActor = ExtractActor(assWithActors[index]);
+                            int count = assWithActors.Count;
+
+                            for (int i = index + 1; i < count; ++i)
+                            {
+                                if (lineEndTimeWithMs > AssFormat.GetTimeKey(assWithActors[i], AssFormat.Start, withMs))
+                                {
+                                    if (initialActor.ToLower() != ExtractActor(assWithActors[i]).ToLower())
+                                    {
+                                        initialActor = "";
+                                        break;
+                                    }
+                                }
+                                else break;
+                            }
+
+                            if (initialActor != "")
+                            {
+                                return ReplaceActor(line, initialActor);
+                            }
+                        }
                     }
                     else
                     {
-                        //origAss line may contain multiple sync options
-                        //if all options have same actors synchronize
-                        string initialActor = ExtractActor(assWithActors[index]);
-                        int count = assWithActors.Count;
-
-                        for (int i = index + 1; i < count; ++i)
-                        {
-                            if (AssFormat.GetTimeKey(line, AssFormat.End) > AssFormat.GetTimeKey(assWithActors[i], AssFormat.Start))
-                            {
-                                if (initialActor.ToLower() != ExtractActor(assWithActors[i]).ToLower())
-                                {
-                                    initialActor = "";
-                                    break;
-                                }
-                            }
-                            else break;
-                        }
-
-                        if(initialActor != "")
-                        {
-                            return ReplaceActor(line, initialActor);
-                        }
+                        return ReplaceActor(line, ExtractActor(assWithActors[index]));
                     }
-                }
-                else
-                {
-                    return ReplaceActor(line, ExtractActor(assWithActors[index]));
                 }
             }
 
@@ -1473,6 +1495,7 @@ namespace Ass_to_Srt_roles_allocator
 
             int origAssCount = origAss.Count;
             int syncedActorsNum = 0;
+            int wrongSyncNum = 0;
             int triedToSyncNum = 0;
 
             isQuickScrollEnabled = true;
@@ -1482,17 +1505,31 @@ namespace Ass_to_Srt_roles_allocator
                 {
                     if (overwriteActors || ExtractActor(origAss[i]) == "")
                     {
-                        string synced = SyncActor(origAss[i]);
+                        string synced = SyncActor(origAss[i], (i + 1 < origAssCount) ? origAss[i + 1] : "");
+                        string report = "";
+
                         if (synced != "")
                         {
+                            if (synced.StartsWith(RIGHT_ARROW))
+                            {
+                                synced = synced.Substring(RIGHT_ARROW.Length);
+                                ++wrongSyncNum;
+                                report = $"Line {i + 1} wrong sync.";
+                            }
+
                             origAss[i] = synced;
                             ++syncedActorsNum;
                         }
                         else
                         {
                             origAss[i] = ReplaceActor(origAss[i], "");
+                            report = $"Line {i + 1} not synced.";
+                        }
+
+                        if (report != "")
+                        {
                             string[] startAndEndTime = ExtractAssTime(origAss[i]);
-                            UpdateReport(GetCurrentTime() + $" Line {i + 1} not synced. Timing: " + startAndEndTime[0] + " --> " + startAndEndTime[1]);
+                            UpdateReport(GetCurrentTime() + $" {report} " + "Timing: " + startAndEndTime[0] + " --> " + startAndEndTime[1]);
                         }
 
                         ++triedToSyncNum;
@@ -1501,6 +1538,9 @@ namespace Ass_to_Srt_roles_allocator
             }
 
             UpdateReport(GetCurrentTime() + $" {syncedActorsNum}/{triedToSyncNum} actors synced successfully");
+            
+            if(wrongSyncNum > 0)
+                UpdateReport(GetCurrentTime() + $" {wrongSyncNum}/{syncedActorsNum} possible wrong sync");
 
 
             // Update labels of origAss
@@ -1762,9 +1802,9 @@ namespace Ass_to_Srt_roles_allocator
             return index;
         }
 
-        public static int GetTimeKey(string subLine, int type)
+        public static int GetTimeKey(string subLine, int type, bool isWithMs)
         {
-            if (type != 0 && type != 1) return -1;
+            if ((type != 0 && type != 1) || subLine == "") return -1;
 
             int timeStartIndex = GetSpecificFormatIndex(subLine, type);
             int timeStartLength = subLine.IndexOf(",", timeStartIndex) - timeStartIndex;
@@ -1783,7 +1823,10 @@ namespace Ass_to_Srt_roles_allocator
                    int.TryParse(timeStart[3], out millisecond)
                   )
                 {
-                    return (hour * 3600 + minute * 60 + second) * 1000 + millisecond;
+                    if (isWithMs)
+                        return (hour * 3600 + minute * 60 + second) * 1000 + millisecond;
+                    else
+                        return (hour * 3600 + minute * 60 + second);
                 }
             }
             catch (Exception ex)
@@ -1805,7 +1848,8 @@ namespace Ass_to_Srt_roles_allocator
 
             public int Compare(string subtitle1, string subtitle2)
             {
-                int compareByStartTime = GetTimeKey(subtitle1, Start).CompareTo(GetTimeKey(subtitle2, Start));
+                const bool withMs = true;
+                int compareByStartTime = GetTimeKey(subtitle1, Start, withMs).CompareTo(GetTimeKey(subtitle2, Start, withMs));
 
                 if (compareByStartTime == 0)
                 {
