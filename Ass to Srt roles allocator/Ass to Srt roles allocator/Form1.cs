@@ -160,15 +160,12 @@ namespace Ass_to_Srt_roles_allocator
                     {
                         if (!IsVectorDrawing(lineToCompare))
                         {
-                            if (ExtractActor(lineToCompare) != "")
-                            {
-                                assWithActors.Add(lineToCompare);
-                            }
-                            else
+                            if (ExtractActor(lineToCompare) == "")
                             {
                                 ++notAllocdNum;
                             }
 
+                            assWithActors.Add(lineToCompare);
                             ++subLines;
                         }
                     }
@@ -813,7 +810,14 @@ namespace Ass_to_Srt_roles_allocator
 
             if (index != -1)
             {
-                return ReplaceActor(line, ExtractActor(assWithActors[index]));
+                if (ExtractActor(assWithActors[index]) != "")
+                {
+                    return ReplaceActor(line, ExtractActor(assWithActors[index]));
+                }
+                else
+                {
+                    return "";
+                }
             }
             else
             {
@@ -821,6 +825,11 @@ namespace Ass_to_Srt_roles_allocator
 
                 if (index != -1)
                 {
+                    if (ExtractActor(assWithActors[index]) == "")
+                    {
+                        return "";
+                    }
+
                     if (index + 1 < assWithActors.Count)
                     {
                         if (lineEndTimeWithMs <= AssFormat.GetTimeKey(assWithActors[index + 1], AssFormat.Start, withMs))
@@ -1538,8 +1547,8 @@ namespace Ass_to_Srt_roles_allocator
             }
 
             UpdateReport(GetCurrentTime() + $" {syncedActorsNum}/{triedToSyncNum} actors synced successfully");
-            
-            if(wrongSyncNum > 0)
+
+            if (wrongSyncNum > 0)
                 UpdateReport(GetCurrentTime() + $" {wrongSyncNum}/{syncedActorsNum} possible wrong sync");
 
 
