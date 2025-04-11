@@ -41,10 +41,9 @@
             this.lblAllocatedActors = new System.Windows.Forms.Label();
             this.chkActorsPerLine = new System.Windows.Forms.CheckBox();
             this.chkSeparateActors = new System.Windows.Forms.CheckBox();
-            this.btnSaveDeleteDubers = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
-            this.lblLoadStatus = new System.Windows.Forms.Label();
+            this.lblActorsLoadStatus = new System.Windows.Forms.Label();
             this.lblConvertionStatus = new System.Windows.Forms.Label();
             this.btnRemoveLog = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -53,8 +52,6 @@
             this.btnToAlloc = new System.Windows.Forms.Button();
             this.cmbDubers = new System.Windows.Forms.ComboBox();
             this.cmbActors = new System.Windows.Forms.ComboBox();
-            this.btnAddDuber = new System.Windows.Forms.Button();
-            this.btnRemoveDuber = new System.Windows.Forms.Button();
             this.lblFilePath = new System.Windows.Forms.Label();
             this.btnSelectFile = new System.Windows.Forms.Button();
             this.tabSyncActors = new System.Windows.Forms.TabPage();
@@ -76,14 +73,39 @@
             this.btnSelectOrigAss = new System.Windows.Forms.Button();
             this.lblNotAllocdActorsNumOrigAss = new System.Windows.Forms.Label();
             this.lblAllocActorsNumOrigAss = new System.Windows.Forms.Label();
+            this.tabBatchImport = new System.Windows.Forms.TabPage();
+            this.lblPathForBatch = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnLoadAssNimport = new System.Windows.Forms.Button();
+            this.lblBatchTotalActors = new System.Windows.Forms.Label();
+            this.lblBatchLinesWithActors = new System.Windows.Forms.Label();
+            this.btnReloadFiles = new System.Windows.Forms.Button();
+            this.btnGenerateTimings = new System.Windows.Forms.Button();
+            this.btnCreateImports = new System.Windows.Forms.Button();
+            this.btnSelectMainActors = new System.Windows.Forms.Button();
+            this.lblBatchAssSelected = new System.Windows.Forms.Label();
+            this.lstAssFiles = new System.Windows.Forms.ListBox();
+            this.btnSelectDirForBatch = new System.Windows.Forms.Button();
             this.toolTipFileNameOrigAss = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipFileNameAssWithActors = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTipBatchPath = new System.Windows.Forms.ToolTip(this.components);
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStatusBatch = new System.Windows.Forms.ToolStripStatusLabel();
+            this.chkKeepNewLines = new System.Windows.Forms.CheckBox();
+            this.btnLoadActorsToList = new System.Windows.Forms.Button();
+            this.btnConvertWithAssFormatting = new System.Windows.Forms.Button();
+            this.lblActorLines = new System.Windows.Forms.Label();
+            this.lblDuberLines = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabConvert.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabSyncActors.SuspendLayout();
             this.grpAssWithActors.SuspendLayout();
             this.grpOrigAss.SuspendLayout();
+            this.tabBatchImport.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -110,6 +132,7 @@
             this.tabControl1.AllowDrop = true;
             this.tabControl1.Controls.Add(this.tabConvert);
             this.tabControl1.Controls.Add(this.tabSyncActors);
+            this.tabControl1.Controls.Add(this.tabBatchImport);
             this.tabControl1.Location = new System.Drawing.Point(-1, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -120,13 +143,17 @@
             // 
             this.tabConvert.AllowDrop = true;
             this.tabConvert.BackColor = System.Drawing.SystemColors.Control;
+            this.tabConvert.Controls.Add(this.lblDuberLines);
+            this.tabConvert.Controls.Add(this.lblActorLines);
+            this.tabConvert.Controls.Add(this.btnConvertWithAssFormatting);
+            this.tabConvert.Controls.Add(this.btnLoadActorsToList);
+            this.tabConvert.Controls.Add(this.chkKeepNewLines);
             this.tabConvert.Controls.Add(this.lblAllocatedActors);
             this.tabConvert.Controls.Add(this.chkActorsPerLine);
             this.tabConvert.Controls.Add(this.chkSeparateActors);
-            this.tabConvert.Controls.Add(this.btnSaveDeleteDubers);
             this.tabConvert.Controls.Add(this.btnImport);
             this.tabConvert.Controls.Add(this.btnExport);
-            this.tabConvert.Controls.Add(this.lblLoadStatus);
+            this.tabConvert.Controls.Add(this.lblActorsLoadStatus);
             this.tabConvert.Controls.Add(this.lblConvertionStatus);
             this.tabConvert.Controls.Add(this.btnRemoveLog);
             this.tabConvert.Controls.Add(this.groupBox1);
@@ -134,8 +161,6 @@
             this.tabConvert.Controls.Add(this.btnToAlloc);
             this.tabConvert.Controls.Add(this.cmbDubers);
             this.tabConvert.Controls.Add(this.cmbActors);
-            this.tabConvert.Controls.Add(this.btnAddDuber);
-            this.tabConvert.Controls.Add(this.btnRemoveDuber);
             this.tabConvert.Controls.Add(this.lblFilePath);
             this.tabConvert.Controls.Add(this.btnSelectFile);
             this.tabConvert.Location = new System.Drawing.Point(4, 22);
@@ -153,9 +178,10 @@
             // 
             this.lblAllocatedActors.AutoSize = true;
             this.lblAllocatedActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblAllocatedActors.Location = new System.Drawing.Point(12, 111);
+            this.lblAllocatedActors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblAllocatedActors.Location = new System.Drawing.Point(12, 104);
             this.lblAllocatedActors.Name = "lblAllocatedActors";
-            this.lblAllocatedActors.Size = new System.Drawing.Size(85, 28);
+            this.lblAllocatedActors.Size = new System.Drawing.Size(95, 32);
             this.lblAllocatedActors.TabIndex = 38;
             this.lblAllocatedActors.Text = "Allocated actors\r\n0/0";
             this.lblAllocatedActors.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -164,10 +190,10 @@
             // 
             this.chkActorsPerLine.AutoSize = true;
             this.chkActorsPerLine.Enabled = false;
-            this.chkActorsPerLine.Location = new System.Drawing.Point(162, 129);
+            this.chkActorsPerLine.Location = new System.Drawing.Point(162, 113);
             this.chkActorsPerLine.Name = "chkActorsPerLine";
             this.chkActorsPerLine.Size = new System.Drawing.Size(93, 17);
-            this.chkActorsPerLine.TabIndex = 37;
+            this.chkActorsPerLine.TabIndex = 10;
             this.chkActorsPerLine.Text = "Actors per line";
             this.chkActorsPerLine.UseVisualStyleBackColor = true;
             this.chkActorsPerLine.CheckedChanged += new System.EventHandler(this.chkActorsPerLine_CheckedChanged);
@@ -176,25 +202,13 @@
             // 
             this.chkSeparateActors.AutoSize = true;
             this.chkSeparateActors.Enabled = false;
-            this.chkSeparateActors.Location = new System.Drawing.Point(162, 106);
+            this.chkSeparateActors.Location = new System.Drawing.Point(162, 91);
             this.chkSeparateActors.Name = "chkSeparateActors";
             this.chkSeparateActors.Size = new System.Drawing.Size(94, 17);
-            this.chkSeparateActors.TabIndex = 36;
+            this.chkSeparateActors.TabIndex = 9;
             this.chkSeparateActors.Text = "Separate SRT";
             this.chkSeparateActors.UseVisualStyleBackColor = true;
             this.chkSeparateActors.CheckedChanged += new System.EventHandler(this.chkSeparateActors_CheckedChanged);
-            // 
-            // btnSaveDeleteDubers
-            // 
-            this.btnSaveDeleteDubers.Enabled = false;
-            this.btnSaveDeleteDubers.Location = new System.Drawing.Point(336, 73);
-            this.btnSaveDeleteDubers.Name = "btnSaveDeleteDubers";
-            this.btnSaveDeleteDubers.Size = new System.Drawing.Size(40, 21);
-            this.btnSaveDeleteDubers.TabIndex = 35;
-            this.btnSaveDeleteDubers.TabStop = false;
-            this.btnSaveDeleteDubers.Text = "Save";
-            this.btnSaveDeleteDubers.UseVisualStyleBackColor = true;
-            this.btnSaveDeleteDubers.Click += new System.EventHandler(this.btnSaveDeleteDubers_Click);
             // 
             // btnImport
             // 
@@ -202,8 +216,7 @@
             this.btnImport.Location = new System.Drawing.Point(262, 233);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(55, 20);
-            this.btnImport.TabIndex = 34;
-            this.btnImport.TabStop = false;
+            this.btnImport.TabIndex = 7;
             this.btnImport.Text = "Import";
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
@@ -214,36 +227,33 @@
             this.btnExport.Location = new System.Drawing.Point(321, 233);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(55, 20);
-            this.btnExport.TabIndex = 33;
-            this.btnExport.TabStop = false;
+            this.btnExport.TabIndex = 8;
             this.btnExport.Text = "Export";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // lblLoadStatus
+            // lblActorsLoadStatus
             // 
-            this.lblLoadStatus.AutoSize = true;
-            this.lblLoadStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblLoadStatus.ForeColor = System.Drawing.Color.Red;
-            this.lblLoadStatus.Location = new System.Drawing.Point(263, 38);
-            this.lblLoadStatus.Name = "lblLoadStatus";
-            this.lblLoadStatus.Size = new System.Drawing.Size(107, 20);
-            this.lblLoadStatus.TabIndex = 32;
-            this.lblLoadStatus.Text = "Actors loaded";
-            this.lblLoadStatus.ForeColorChanged += new System.EventHandler(this.lblLoadStatus_ForeColorChanged);
-            this.lblLoadStatus.DoubleClick += new System.EventHandler(this.lblLoadStatus_DoubleClick);
+            this.lblActorsLoadStatus.AutoSize = true;
+            this.lblActorsLoadStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblActorsLoadStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblActorsLoadStatus.Location = new System.Drawing.Point(269, 38);
+            this.lblActorsLoadStatus.Name = "lblActorsLoadStatus";
+            this.lblActorsLoadStatus.Size = new System.Drawing.Size(107, 20);
+            this.lblActorsLoadStatus.TabIndex = 32;
+            this.lblActorsLoadStatus.Text = "Actors loaded";
+            this.lblActorsLoadStatus.ForeColorChanged += new System.EventHandler(this.lblLoadStatus_ForeColorChanged);
             // 
             // lblConvertionStatus
             // 
             this.lblConvertionStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblConvertionStatus.ForeColor = System.Drawing.Color.Red;
-            this.lblConvertionStatus.Location = new System.Drawing.Point(262, 116);
+            this.lblConvertionStatus.Location = new System.Drawing.Point(261, 98);
             this.lblConvertionStatus.Name = "lblConvertionStatus";
-            this.lblConvertionStatus.Size = new System.Drawing.Size(121, 23);
+            this.lblConvertionStatus.Size = new System.Drawing.Size(121, 24);
             this.lblConvertionStatus.TabIndex = 31;
             this.lblConvertionStatus.Text = "Converted";
             this.lblConvertionStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblConvertionStatus.DoubleClick += new System.EventHandler(this.lblConvertionStatus_DoubleClick);
             // 
             // btnRemoveLog
             // 
@@ -251,8 +261,7 @@
             this.btnRemoveLog.Location = new System.Drawing.Point(262, 207);
             this.btnRemoveLog.Name = "btnRemoveLog";
             this.btnRemoveLog.Size = new System.Drawing.Size(116, 20);
-            this.btnRemoveLog.TabIndex = 27;
-            this.btnRemoveLog.TabStop = false;
+            this.btnRemoveLog.TabIndex = 5;
             this.btnRemoveLog.Text = "Remove";
             this.btnRemoveLog.UseVisualStyleBackColor = true;
             this.btnRemoveLog.Click += new System.EventHandler(this.btnRemoveLog_Click);
@@ -263,9 +272,9 @@
             this.groupBox1.Location = new System.Drawing.Point(6, 152);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(247, 104);
-            this.groupBox1.TabIndex = 30;
+            this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "To change";
+            this.groupBox1.Text = "Actors list";
             // 
             // lstToChange
             // 
@@ -276,8 +285,8 @@
             this.lstToChange.Name = "lstToChange";
             this.lstToChange.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstToChange.Size = new System.Drawing.Size(235, 82);
+            this.lstToChange.Sorted = true;
             this.lstToChange.TabIndex = 0;
-            this.lstToChange.TabStop = false;
             this.lstToChange.ValueMember = "String";
             this.lstToChange.SelectedIndexChanged += new System.EventHandler(this.lstToChange_SelectedIndexChanged);
             this.lstToChange.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstToChange_DragDrop);
@@ -292,7 +301,7 @@
             this.btnConvert.Location = new System.Drawing.Point(262, 160);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(116, 41);
-            this.btnConvert.TabIndex = 29;
+            this.btnConvert.TabIndex = 12;
             this.btnConvert.Text = "Convert";
             this.btnConvert.UseVisualStyleBackColor = false;
             this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
@@ -301,10 +310,10 @@
             // 
             this.btnToAlloc.Enabled = false;
             this.btnToAlloc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnToAlloc.Location = new System.Drawing.Point(120, 100);
+            this.btnToAlloc.Location = new System.Drawing.Point(122, 94);
             this.btnToAlloc.Name = "btnToAlloc";
             this.btnToAlloc.Size = new System.Drawing.Size(25, 52);
-            this.btnToAlloc.TabIndex = 28;
+            this.btnToAlloc.TabIndex = 3;
             this.btnToAlloc.Text = "↓";
             this.btnToAlloc.UseVisualStyleBackColor = true;
             this.btnToAlloc.Click += new System.EventHandler(this.btnToAlloc_Click);
@@ -312,47 +321,22 @@
             // cmbDubers
             // 
             this.cmbDubers.FormattingEnabled = true;
-            this.cmbDubers.Location = new System.Drawing.Point(6, 73);
+            this.cmbDubers.Location = new System.Drawing.Point(83, 64);
             this.cmbDubers.Name = "cmbDubers";
-            this.cmbDubers.Size = new System.Drawing.Size(250, 21);
-            this.cmbDubers.TabIndex = 26;
+            this.cmbDubers.Size = new System.Drawing.Size(173, 21);
+            this.cmbDubers.TabIndex = 2;
+            this.cmbDubers.SelectedIndexChanged += new System.EventHandler(this.cmbDubers_TextUpdate);
             this.cmbDubers.TextUpdate += new System.EventHandler(this.cmbDubers_TextUpdate);
             // 
             // cmbActors
             // 
             this.cmbActors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbActors.FormattingEnabled = true;
-            this.cmbActors.Location = new System.Drawing.Point(6, 37);
+            this.cmbActors.Location = new System.Drawing.Point(83, 37);
             this.cmbActors.Name = "cmbActors";
-            this.cmbActors.Size = new System.Drawing.Size(250, 21);
-            this.cmbActors.TabIndex = 24;
+            this.cmbActors.Size = new System.Drawing.Size(173, 21);
+            this.cmbActors.TabIndex = 1;
             this.cmbActors.SelectedIndexChanged += new System.EventHandler(this.cmbActors_SelectedIndexChanged);
-            // 
-            // btnAddDuber
-            // 
-            this.btnAddDuber.Enabled = false;
-            this.btnAddDuber.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnAddDuber.Location = new System.Drawing.Point(297, 73);
-            this.btnAddDuber.Name = "btnAddDuber";
-            this.btnAddDuber.Size = new System.Drawing.Size(32, 21);
-            this.btnAddDuber.TabIndex = 23;
-            this.btnAddDuber.TabStop = false;
-            this.btnAddDuber.Text = "+";
-            this.btnAddDuber.UseVisualStyleBackColor = true;
-            this.btnAddDuber.Click += new System.EventHandler(this.btnAddDuber_Click);
-            // 
-            // btnRemoveDuber
-            // 
-            this.btnRemoveDuber.Enabled = false;
-            this.btnRemoveDuber.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnRemoveDuber.Location = new System.Drawing.Point(262, 73);
-            this.btnRemoveDuber.Name = "btnRemoveDuber";
-            this.btnRemoveDuber.Size = new System.Drawing.Size(32, 21);
-            this.btnRemoveDuber.TabIndex = 22;
-            this.btnRemoveDuber.TabStop = false;
-            this.btnRemoveDuber.Text = "-";
-            this.btnRemoveDuber.UseVisualStyleBackColor = true;
-            this.btnRemoveDuber.Click += new System.EventHandler(this.btnRemoveDuber_Click);
             // 
             // lblFilePath
             // 
@@ -370,7 +354,7 @@
             this.btnSelectFile.Location = new System.Drawing.Point(6, 8);
             this.btnSelectFile.Name = "btnSelectFile";
             this.btnSelectFile.Size = new System.Drawing.Size(75, 23);
-            this.btnSelectFile.TabIndex = 21;
+            this.btnSelectFile.TabIndex = 0;
             this.btnSelectFile.Text = "Select File";
             this.btnSelectFile.UseVisualStyleBackColor = true;
             this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
@@ -399,7 +383,7 @@
             this.btnOpenReport.Location = new System.Drawing.Point(286, 230);
             this.btnOpenReport.Name = "btnOpenReport";
             this.btnOpenReport.Size = new System.Drawing.Size(80, 23);
-            this.btnOpenReport.TabIndex = 7;
+            this.btnOpenReport.TabIndex = 6;
             this.btnOpenReport.Text = "Open report";
             this.btnOpenReport.UseVisualStyleBackColor = true;
             this.btnOpenReport.Click += new System.EventHandler(this.btnOpenReport_Click);
@@ -503,7 +487,7 @@
             // 
             this.lblSubLinesAssWithActors.AutoSize = true;
             this.lblSubLinesAssWithActors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblSubLinesAssWithActors.Location = new System.Drawing.Point(6, 59);
+            this.lblSubLinesAssWithActors.Location = new System.Drawing.Point(5, 59);
             this.lblSubLinesAssWithActors.Name = "lblSubLinesAssWithActors";
             this.lblSubLinesAssWithActors.Size = new System.Drawing.Size(107, 16);
             this.lblSubLinesAssWithActors.TabIndex = 5;
@@ -515,9 +499,9 @@
             this.lblNotAllocdActorsNumAssWithActors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblNotAllocdActorsNumAssWithActors.Location = new System.Drawing.Point(6, 91);
             this.lblNotAllocdActorsNumAssWithActors.Name = "lblNotAllocdActorsNumAssWithActors";
-            this.lblNotAllocdActorsNumAssWithActors.Size = new System.Drawing.Size(140, 16);
+            this.lblNotAllocdActorsNumAssWithActors.Size = new System.Drawing.Size(135, 16);
             this.lblNotAllocdActorsNumAssWithActors.TabIndex = 4;
-            this.lblNotAllocdActorsNumAssWithActors.Text = "Not allocated actors: 0";
+            this.lblNotAllocdActorsNumAssWithActors.Text = "Lines without actors: 0";
             // 
             // lblAllocActorsNumAssWithActors
             // 
@@ -527,7 +511,7 @@
             this.lblAllocActorsNumAssWithActors.Name = "lblAllocActorsNumAssWithActors";
             this.lblAllocActorsNumAssWithActors.Size = new System.Drawing.Size(117, 16);
             this.lblAllocActorsNumAssWithActors.TabIndex = 3;
-            this.lblAllocActorsNumAssWithActors.Text = "Allocated actors: 0";
+            this.lblAllocActorsNumAssWithActors.Text = "Lines with actors: 0";
             // 
             // grpOrigAss
             // 
@@ -561,7 +545,7 @@
             // 
             this.lblSubLinesOrigAss.AutoSize = true;
             this.lblSubLinesOrigAss.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblSubLinesOrigAss.Location = new System.Drawing.Point(6, 59);
+            this.lblSubLinesOrigAss.Location = new System.Drawing.Point(5, 59);
             this.lblSubLinesOrigAss.Name = "lblSubLinesOrigAss";
             this.lblSubLinesOrigAss.Size = new System.Drawing.Size(107, 16);
             this.lblSubLinesOrigAss.TabIndex = 2;
@@ -583,9 +567,9 @@
             this.lblNotAllocdActorsNumOrigAss.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblNotAllocdActorsNumOrigAss.Location = new System.Drawing.Point(6, 91);
             this.lblNotAllocdActorsNumOrigAss.Name = "lblNotAllocdActorsNumOrigAss";
-            this.lblNotAllocdActorsNumOrigAss.Size = new System.Drawing.Size(140, 16);
+            this.lblNotAllocdActorsNumOrigAss.Size = new System.Drawing.Size(135, 16);
             this.lblNotAllocdActorsNumOrigAss.TabIndex = 1;
-            this.lblNotAllocdActorsNumOrigAss.Text = "Not allocated actors: 0";
+            this.lblNotAllocdActorsNumOrigAss.Text = "Lines without actors: 0";
             // 
             // lblAllocActorsNumOrigAss
             // 
@@ -595,7 +579,238 @@
             this.lblAllocActorsNumOrigAss.Name = "lblAllocActorsNumOrigAss";
             this.lblAllocActorsNumOrigAss.Size = new System.Drawing.Size(117, 16);
             this.lblAllocActorsNumOrigAss.TabIndex = 0;
-            this.lblAllocActorsNumOrigAss.Text = "Allocated actors: 0";
+            this.lblAllocActorsNumOrigAss.Text = "Lines with actors: 0";
+            // 
+            // tabBatchImport
+            // 
+            this.tabBatchImport.Controls.Add(this.statusStrip1);
+            this.tabBatchImport.Controls.Add(this.lblPathForBatch);
+            this.tabBatchImport.Controls.Add(this.groupBox2);
+            this.tabBatchImport.Controls.Add(this.btnSelectDirForBatch);
+            this.tabBatchImport.Location = new System.Drawing.Point(4, 22);
+            this.tabBatchImport.Name = "tabBatchImport";
+            this.tabBatchImport.Padding = new System.Windows.Forms.Padding(3);
+            this.tabBatchImport.Size = new System.Drawing.Size(392, 259);
+            this.tabBatchImport.TabIndex = 2;
+            this.tabBatchImport.Text = "Batch import creator";
+            this.tabBatchImport.UseVisualStyleBackColor = true;
+            // 
+            // lblPathForBatch
+            // 
+            this.lblPathForBatch.AutoEllipsis = true;
+            this.lblPathForBatch.AutoSize = true;
+            this.lblPathForBatch.Location = new System.Drawing.Point(111, 13);
+            this.lblPathForBatch.MaximumSize = new System.Drawing.Size(286, 13);
+            this.lblPathForBatch.Name = "lblPathForBatch";
+            this.lblPathForBatch.Size = new System.Drawing.Size(35, 13);
+            this.lblPathForBatch.TabIndex = 3;
+            this.lblPathForBatch.Text = "Path: ";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnLoadAssNimport);
+            this.groupBox2.Controls.Add(this.lblBatchTotalActors);
+            this.groupBox2.Controls.Add(this.lblBatchLinesWithActors);
+            this.groupBox2.Controls.Add(this.btnReloadFiles);
+            this.groupBox2.Controls.Add(this.btnGenerateTimings);
+            this.groupBox2.Controls.Add(this.btnCreateImports);
+            this.groupBox2.Controls.Add(this.btnSelectMainActors);
+            this.groupBox2.Controls.Add(this.lblBatchAssSelected);
+            this.groupBox2.Controls.Add(this.lstAssFiles);
+            this.groupBox2.Location = new System.Drawing.Point(3, 37);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(386, 196);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "ASS files list";
+            // 
+            // btnLoadAssNimport
+            // 
+            this.btnLoadAssNimport.Enabled = false;
+            this.btnLoadAssNimport.Location = new System.Drawing.Point(308, 155);
+            this.btnLoadAssNimport.Name = "btnLoadAssNimport";
+            this.btnLoadAssNimport.Size = new System.Drawing.Size(72, 39);
+            this.btnLoadAssNimport.TabIndex = 5;
+            this.btnLoadAssNimport.Text = "Load to converter";
+            this.btnLoadAssNimport.UseVisualStyleBackColor = true;
+            this.btnLoadAssNimport.Click += new System.EventHandler(this.btnLoadAssNimport_Click);
+            // 
+            // lblBatchTotalActors
+            // 
+            this.lblBatchTotalActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBatchTotalActors.Location = new System.Drawing.Point(216, 157);
+            this.lblBatchTotalActors.Name = "lblBatchTotalActors";
+            this.lblBatchTotalActors.Size = new System.Drawing.Size(86, 35);
+            this.lblBatchTotalActors.TabIndex = 8;
+            this.lblBatchTotalActors.Text = "Actors number\r\n0";
+            this.lblBatchTotalActors.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblBatchLinesWithActors
+            // 
+            this.lblBatchLinesWithActors.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBatchLinesWithActors.Location = new System.Drawing.Point(111, 157);
+            this.lblBatchLinesWithActors.Name = "lblBatchLinesWithActors";
+            this.lblBatchLinesWithActors.Size = new System.Drawing.Size(86, 35);
+            this.lblBatchLinesWithActors.TabIndex = 7;
+            this.lblBatchLinesWithActors.Text = "Lines allocated\r\n0/0";
+            this.lblBatchLinesWithActors.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnReloadFiles
+            // 
+            this.btnReloadFiles.Enabled = false;
+            this.btnReloadFiles.Location = new System.Drawing.Point(308, 120);
+            this.btnReloadFiles.Name = "btnReloadFiles";
+            this.btnReloadFiles.Size = new System.Drawing.Size(72, 35);
+            this.btnReloadFiles.TabIndex = 4;
+            this.btnReloadFiles.Text = "Reload files";
+            this.btnReloadFiles.UseVisualStyleBackColor = true;
+            this.btnReloadFiles.Click += new System.EventHandler(this.btnReloadFiles_Click);
+            // 
+            // btnGenerateTimings
+            // 
+            this.btnGenerateTimings.Enabled = false;
+            this.btnGenerateTimings.Location = new System.Drawing.Point(308, 85);
+            this.btnGenerateTimings.Name = "btnGenerateTimings";
+            this.btnGenerateTimings.Size = new System.Drawing.Size(72, 35);
+            this.btnGenerateTimings.TabIndex = 3;
+            this.btnGenerateTimings.Text = "Generate timings";
+            this.btnGenerateTimings.UseVisualStyleBackColor = true;
+            this.btnGenerateTimings.Click += new System.EventHandler(this.btnGenerateTimings_Click);
+            // 
+            // btnCreateImports
+            // 
+            this.btnCreateImports.Enabled = false;
+            this.btnCreateImports.Location = new System.Drawing.Point(308, 50);
+            this.btnCreateImports.Name = "btnCreateImports";
+            this.btnCreateImports.Size = new System.Drawing.Size(72, 35);
+            this.btnCreateImports.TabIndex = 2;
+            this.btnCreateImports.Text = "Create imports";
+            this.btnCreateImports.UseVisualStyleBackColor = true;
+            this.btnCreateImports.Click += new System.EventHandler(this.btnCreateImports_Click);
+            // 
+            // btnSelectMainActors
+            // 
+            this.btnSelectMainActors.Enabled = false;
+            this.btnSelectMainActors.Location = new System.Drawing.Point(308, 15);
+            this.btnSelectMainActors.Name = "btnSelectMainActors";
+            this.btnSelectMainActors.Size = new System.Drawing.Size(72, 35);
+            this.btnSelectMainActors.TabIndex = 1;
+            this.btnSelectMainActors.Text = "Select main actors";
+            this.btnSelectMainActors.UseVisualStyleBackColor = true;
+            this.btnSelectMainActors.Click += new System.EventHandler(this.btnSelectMainActors_Click);
+            // 
+            // lblBatchAssSelected
+            // 
+            this.lblBatchAssSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBatchAssSelected.Location = new System.Drawing.Point(6, 157);
+            this.lblBatchAssSelected.Name = "lblBatchAssSelected";
+            this.lblBatchAssSelected.Size = new System.Drawing.Size(86, 35);
+            this.lblBatchAssSelected.TabIndex = 2;
+            this.lblBatchAssSelected.Text = "ASS selected\r\n0/0";
+            this.lblBatchAssSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lstAssFiles
+            // 
+            this.lstAssFiles.AllowDrop = true;
+            this.lstAssFiles.DisplayMember = "String";
+            this.lstAssFiles.FormattingEnabled = true;
+            this.lstAssFiles.HorizontalScrollbar = true;
+            this.lstAssFiles.Location = new System.Drawing.Point(6, 15);
+            this.lstAssFiles.Name = "lstAssFiles";
+            this.lstAssFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.lstAssFiles.Size = new System.Drawing.Size(296, 134);
+            this.lstAssFiles.Sorted = true;
+            this.lstAssFiles.TabIndex = 0;
+            this.lstAssFiles.ValueMember = "String";
+            this.lstAssFiles.SelectedIndexChanged += new System.EventHandler(this.lstAssFiles_SelectedIndexChanged);
+            this.lstAssFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstAssFiles_DragDrop);
+            this.lstAssFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstAssFiles_DragEnter);
+            this.lstAssFiles.DragOver += new System.Windows.Forms.DragEventHandler(this.lstAssFiles_DragOver);
+            this.lstAssFiles.DragLeave += new System.EventHandler(this.lstAssFiles_DragLeave);
+            // 
+            // btnSelectDirForBatch
+            // 
+            this.btnSelectDirForBatch.Location = new System.Drawing.Point(6, 8);
+            this.btnSelectDirForBatch.Name = "btnSelectDirForBatch";
+            this.btnSelectDirForBatch.Size = new System.Drawing.Size(99, 23);
+            this.btnSelectDirForBatch.TabIndex = 0;
+            this.btnSelectDirForBatch.Text = "Select directory";
+            this.btnSelectDirForBatch.UseVisualStyleBackColor = true;
+            this.btnSelectDirForBatch.Click += new System.EventHandler(this.btnSelectDirForBatch_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatusBatch});
+            this.statusStrip1.Location = new System.Drawing.Point(3, 234);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(386, 22);
+            this.statusStrip1.Stretch = false;
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatusBatch
+            // 
+            this.lblStatusBatch.Name = "lblStatusBatch";
+            this.lblStatusBatch.Size = new System.Drawing.Size(242, 17);
+            this.lblStatusBatch.Text = "Select directory or drag and drop it to the list";
+            // 
+            // chkKeepNewLines
+            // 
+            this.chkKeepNewLines.AutoSize = true;
+            this.chkKeepNewLines.Checked = true;
+            this.chkKeepNewLines.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkKeepNewLines.Enabled = false;
+            this.chkKeepNewLines.Location = new System.Drawing.Point(162, 135);
+            this.chkKeepNewLines.Name = "chkKeepNewLines";
+            this.chkKeepNewLines.Size = new System.Drawing.Size(98, 17);
+            this.chkKeepNewLines.TabIndex = 11;
+            this.chkKeepNewLines.Text = "Keep new lines";
+            this.chkKeepNewLines.UseVisualStyleBackColor = true;
+            this.chkKeepNewLines.CheckedChanged += new System.EventHandler(this.chkKeepNewLines_CheckedChanged);
+            // 
+            // btnLoadActorsToList
+            // 
+            this.btnLoadActorsToList.Enabled = false;
+            this.btnLoadActorsToList.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnLoadActorsToList.Location = new System.Drawing.Point(267, 64);
+            this.btnLoadActorsToList.Name = "btnLoadActorsToList";
+            this.btnLoadActorsToList.Size = new System.Drawing.Size(109, 21);
+            this.btnLoadActorsToList.TabIndex = 6;
+            this.btnLoadActorsToList.Text = "Load actors to list";
+            this.btnLoadActorsToList.UseVisualStyleBackColor = true;
+            this.btnLoadActorsToList.Click += new System.EventHandler(this.btnLoadActorsToList_Click);
+            // 
+            // btnConvertWithAssFormatting
+            // 
+            this.btnConvertWithAssFormatting.Enabled = false;
+            this.btnConvertWithAssFormatting.Location = new System.Drawing.Point(262, 135);
+            this.btnConvertWithAssFormatting.Name = "btnConvertWithAssFormatting";
+            this.btnConvertWithAssFormatting.Size = new System.Drawing.Size(116, 23);
+            this.btnConvertWithAssFormatting.TabIndex = 13;
+            this.btnConvertWithAssFormatting.Text = "Keep ass formatting";
+            this.btnConvertWithAssFormatting.UseVisualStyleBackColor = true;
+            this.btnConvertWithAssFormatting.Click += new System.EventHandler(this.btnConvertWithAssFormatting_Click);
+            // 
+            // lblActorLines
+            // 
+            this.lblActorLines.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblActorLines.Location = new System.Drawing.Point(6, 37);
+            this.lblActorLines.Name = "lblActorLines";
+            this.lblActorLines.Size = new System.Drawing.Size(76, 21);
+            this.lblActorLines.TabIndex = 45;
+            this.lblActorLines.Text = "Lines: 0";
+            this.lblActorLines.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblDuberLines
+            // 
+            this.lblDuberLines.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblDuberLines.Location = new System.Drawing.Point(6, 64);
+            this.lblDuberLines.Name = "lblDuberLines";
+            this.lblDuberLines.Size = new System.Drawing.Size(76, 21);
+            this.lblDuberLines.TabIndex = 46;
+            this.lblDuberLines.Text = "Lines: 0";
+            this.lblDuberLines.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
@@ -610,6 +825,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ASS to SRT";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabConvert.ResumeLayout(false);
             this.tabConvert.PerformLayout();
@@ -620,6 +836,11 @@
             this.grpAssWithActors.PerformLayout();
             this.grpOrigAss.ResumeLayout(false);
             this.grpOrigAss.PerformLayout();
+            this.tabBatchImport.ResumeLayout(false);
+            this.tabBatchImport.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -636,10 +857,9 @@
         private System.Windows.Forms.Label lblAllocatedActors;
         private System.Windows.Forms.CheckBox chkActorsPerLine;
         private System.Windows.Forms.CheckBox chkSeparateActors;
-        private System.Windows.Forms.Button btnSaveDeleteDubers;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnExport;
-        private System.Windows.Forms.Label lblLoadStatus;
+        private System.Windows.Forms.Label lblActorsLoadStatus;
         private System.Windows.Forms.Label lblConvertionStatus;
         private System.Windows.Forms.Button btnRemoveLog;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -648,8 +868,6 @@
         private System.Windows.Forms.Button btnToAlloc;
         private System.Windows.Forms.ComboBox cmbDubers;
         private System.Windows.Forms.ComboBox cmbActors;
-        private System.Windows.Forms.Button btnAddDuber;
-        private System.Windows.Forms.Button btnRemoveDuber;
         private System.Windows.Forms.Label lblFilePath;
         private System.Windows.Forms.Button btnSelectFile;
         private System.Windows.Forms.TabPage tabSyncActors;
@@ -673,6 +891,28 @@
         private System.Windows.Forms.RichTextBox richSyncReport;
         private System.Windows.Forms.ToolTip toolTipFileNameOrigAss;
         private System.Windows.Forms.ToolTip toolTipFileNameAssWithActors;
+        private System.Windows.Forms.TabPage tabBatchImport;
+        private System.Windows.Forms.Button btnSelectDirForBatch;
+        private System.Windows.Forms.ListBox lstAssFiles;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lblBatchAssSelected;
+        private System.Windows.Forms.Label lblPathForBatch;
+        private System.Windows.Forms.Button btnSelectMainActors;
+        private System.Windows.Forms.Button btnGenerateTimings;
+        private System.Windows.Forms.Button btnCreateImports;
+        private System.Windows.Forms.Button btnReloadFiles;
+        private System.Windows.Forms.Label lblBatchTotalActors;
+        private System.Windows.Forms.Label lblBatchLinesWithActors;
+        private System.Windows.Forms.Button btnLoadAssNimport;
+        private System.Windows.Forms.ToolTip toolTipBatchPath;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatusBatch;
+        private System.Windows.Forms.CheckBox chkKeepNewLines;
+        private System.Windows.Forms.Button btnLoadActorsToList;
+        private System.Windows.Forms.Button btnConvertWithAssFormatting;
+        private System.Windows.Forms.Label lblActorLines;
+        private System.Windows.Forms.Label lblDuberLines;
     }
 }
 

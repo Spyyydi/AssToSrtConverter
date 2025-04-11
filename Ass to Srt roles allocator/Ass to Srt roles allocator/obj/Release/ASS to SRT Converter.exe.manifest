@@ -43,24 +43,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ASS to SRT Converter.exe" size="53760">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ASS to SRT Converter.exe" size="84992">
       <assemblyIdentity name="ASS to SRT Converter" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>y2pZcISSQrVB0/YqrXr6yEqohi48ekkFbAXrpt4XVaI=</dsig:DigestValue>
+        <dsig:DigestValue>VL+9SzWM/GcGEqU/AEFjfQYrM5r54ySaGFhqFZ867gU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="ASS to SRT Converter.exe.config" size="962">
+  <file name="ASS to SRT Converter.exe.config" size="234">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>rzlbPiZZ2SXkyQJ2s1wcxKSKBSPxRNc9X6oUzyFcwhE=</dsig:DigestValue>
+      <dsig:DigestValue>PcKz7eADFF3VPsAOId3cf5mvnveMFAEHYkAHMe6OdLk=</dsig:DigestValue>
     </hash>
   </file>
   <file name="icon.ico" size="1150">

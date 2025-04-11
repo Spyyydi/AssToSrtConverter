@@ -13,3 +13,4 @@ C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.application
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.exe
 C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\ASS to SRT Converter.pdb
+C:\Users\MAGNUM\Documents\Visual Studio 2022\Projects\Ass to Srt roles allocator\Ass to Srt roles allocator\obj\Release\Ass_to_Srt_roles_allocator.BatchMainActorsSelector.resources
