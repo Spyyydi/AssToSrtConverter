@@ -35,9 +35,11 @@ namespace Ass_to_Srt_roles_allocator
                                              .ToArray());
             ModifyLabel(MAIN_ACTORS_LABEL);
 
-            if (IsLastSavedMainActorsChanged())
+            if (IsLastSavedMainActorsChanged() && lstMainActors.Items.Count > 0)
                 btnSave.Enabled = true;
             else btnSave.Enabled = false;
+
+            ModifyDeleteButton();
 
             allocatedActors = new List<string>();
 
@@ -52,6 +54,7 @@ namespace Ass_to_Srt_roles_allocator
 
             UpdateAllocatedActorsListBox();
             ModifyLabel(ALLOCED_ACTORS_LABEL);
+            ModifyMoveButton();
         }
 
         public void SetMainActorsAfterReload(IReadOnlyList<string> main)
@@ -64,6 +67,7 @@ namespace Ass_to_Srt_roles_allocator
                                                             .ToArray());
             ModifyLabel(MAIN_ACTORS_LABEL);
             btnSave.Enabled = false;
+            ModifyDeleteButton();
         }
 
         private void UpdateAllocatedActorsListBox()
@@ -72,7 +76,7 @@ namespace Ass_to_Srt_roles_allocator
                                                          .Select(s => ChangeToArr(s))
                                                          .ToArray();
             lstAllocedActors.Items.Clear();
-            
+
             if (allocatedActorsArr.Length > 0)
                 lstAllocedActors.Items.AddRange(allocatedActorsArr);
         }
@@ -134,6 +138,32 @@ namespace Ass_to_Srt_roles_allocator
                    !groupedLastSavedMainActors.Except(groupedCurrMainActors).Any() &&
                    !groupedCurrMainActors.Except(groupedLastSavedMainActors).Any());
         }
+
+        private void ModifyDeleteButton()
+        {
+            if (lstMainActors.Items.Count > 0 && lstMainActors.SelectedItems.Count < 1)
+            {
+                btnDelete.Text = "Remove all";
+                btnDelete.Enabled = true;
+            }
+            else if (lstMainActors.Items.Count > 0 && lstMainActors.SelectedItems.Count > 0)
+            {
+                btnDelete.Text = "Remove";
+                btnDelete.Enabled = true;
+            }
+            else
+            {
+                btnDelete.Text = "Remove";
+                btnDelete.Enabled = false;
+            }
+        }
+        
+        private void ModifyMoveButton()
+        {
+            if (lstAllocedActors.SelectedItems.Count < 1)
+                btnMove.Enabled = false;
+            else btnMove.Enabled = true;
+        }
         #endregion
 
         #region Button click events
@@ -148,7 +178,7 @@ namespace Ass_to_Srt_roles_allocator
             List<string> selectedItems = lstAllocedActors.SelectedItems.Cast<string>().ToList();
             foreach (var item in selectedItems)
             {
-                if (!IsMainActorsContainsActor(item.Substring(0, item.IndexOf(' '))))
+                if (!IsMainActorsContainsActor(item.Substring(0, item.IndexOf(RIGHT_ARROW)).Trim()))
                     lstMainActors.Items.Add(item);
             }
             ModifyLabel(MAIN_ACTORS_LABEL);
@@ -156,11 +186,13 @@ namespace Ass_to_Srt_roles_allocator
             UpdateAllocatedActorsListBox();
             ModifyLabel(ALLOCED_ACTORS_LABEL);
 
-            if (IsLastSavedMainActorsChanged())
+            if (IsLastSavedMainActorsChanged() && lstMainActors.Items.Count > 0)
                 btnSave.Enabled = true;
             else btnSave.Enabled = false;
 
-            btnMove.Enabled = false;
+            ModifyDeleteButton();
+
+            ModifyMoveButton();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -177,41 +209,41 @@ namespace Ass_to_Srt_roles_allocator
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            List<string> selectedItems = new List<string>();
             if (lstMainActors.SelectedItems.Count < 1)
             {
-                btnDelete.Enabled = false;
-                return;
+                selectedItems.AddRange(lstMainActors.Items.Cast<string>());
+            }
+            else
+            {
+                selectedItems.AddRange(lstMainActors.SelectedItems.Cast<string>());
             }
 
-            List<string> selectedItems = lstMainActors.SelectedItems.Cast<string>().ToList();
             foreach (var item in selectedItems)
             {
                 lstMainActors.Items.Remove(item);
             }
 
+
             UpdateAllocatedActorsListBox();
             ModifyLabel(ALLOCED_ACTORS_LABEL);
 
-            if (IsLastSavedMainActorsChanged())
+            if (IsLastSavedMainActorsChanged() && lstMainActors.Items.Count > 0)
                 btnSave.Enabled = true;
             else btnSave.Enabled = false;
 
-            btnDelete.Enabled = false;
+            ModifyDeleteButton();
+            ModifyMoveButton();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (IsLastSavedMainActorsChanged())
-            {
-                lastSavedMainActors.Clear();
-                lastSavedMainActors.AddRange(lstMainActors.Items.Cast<string>()
-                                                                 .Select(s => ChangeToColon(s))
-                                                                 .Where(s => s.Count(c => c == ':') == 1 && !s.EndsWith(":") && !s.StartsWith(":"))
-                                                                 .ToList());
-                ChangeMainActorsEvent?.Invoke(lastSavedMainActors);
+            ChangeMainActorsEvent?.Invoke(lstMainActors.Items.Cast<string>()
+                                                             .Select(s => ChangeToColon(s))
+                                                             .Where(s => s.Count(c => c == ':') == 1 && !s.EndsWith(":") && !s.StartsWith(":"))
+                                                             .ToList());
 
-                MainActorsChangedEvent?.Invoke();
-            }
+            MainActorsChangedEvent?.Invoke();
 
             this.Close();
         }
@@ -222,18 +254,14 @@ namespace Ass_to_Srt_roles_allocator
         {
             ModifyLabel(MAIN_ACTORS_LABEL);
 
-            if (lstMainActors.SelectedItems.Count < 1)
-                btnDelete.Enabled = false;
-            else btnDelete.Enabled = true;
+            ModifyDeleteButton();
         }
 
         private void lstAllocedActors_SelectedIndexChanged(object sender, EventArgs e)
         {
             ModifyLabel(ALLOCED_ACTORS_LABEL);
 
-            if (lstAllocedActors.SelectedItems.Count < 1)
-                btnMove.Enabled = false;
-            else btnMove.Enabled = true;
+            ModifyMoveButton();
         }
         #endregion
     }

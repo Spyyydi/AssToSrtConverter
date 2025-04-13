@@ -1770,7 +1770,7 @@ namespace Ass_to_Srt_roles_allocator
                     lastSavedMainActors
                     );
 
-                lblStatusBatch.Text = "Main actors saved";
+                lblStatusBatch.Text = "Main actors saved to file";
             }
             catch (Exception ex)
             {
@@ -1903,7 +1903,7 @@ namespace Ass_to_Srt_roles_allocator
                     }
                 };
                 mainActorsSelector.SaveMainActorsEvent += () => SaveMainActorsForBatch();
-                mainActorsSelector.MainActorsChangedEvent += () => lblStatusBatch.Text = "Main actors changed";
+                mainActorsSelector.MainActorsChangedEvent += () => lblStatusBatch.Text = "Main actors saved";
                 mainActorsSelector.FormClosed += (s, e) => mainActorsSelector = null; // Reset when closed
             }
 
@@ -1942,6 +1942,7 @@ namespace Ass_to_Srt_roles_allocator
 
         private void btnSelectMainActors_Click(object sender, EventArgs e)
         {
+            lblStatusBatch.Text = "Main actors selector form opened";
             OpenBatchSelector();
         }
 
