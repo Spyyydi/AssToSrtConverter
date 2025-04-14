@@ -97,7 +97,7 @@ namespace Ass_to_Srt_roles_allocator
 
         public int GetAllocatedLinesNum()
         {
-            return Subs.Where(s => AssFormat.ExtractActor(s) != "EMPTY ACTOR").ToList().Count;
+            return Subs.Count(c => AssFormat.ExtractActor(c) != "EMPTY ACTOR");
         }
 
         public List<string> GetAllocatedImport()
@@ -203,16 +203,16 @@ namespace Ass_to_Srt_roles_allocator
 
             List<string> timings = new List<string>
             {
-                $"== {FileName} =="
+                $"== {FileName} => [Empty actors: {emptyActors.Count}] =="
             };
 
             foreach (string actor in emptyActors)
             {
                 exclude.Add(actor);
 
-                timings.Add($"[{actor}] - {Subs.Count(c => AssFormat.ExtractActor(c).Contains(actor) && AssFormat.ExtractDialogue(c, true) != "")} line(s)");
+                timings.Add($"[{actor}] - {Subs.Count(c => AssFormat.SplitActors(AssFormat.ExtractActor(c)).Contains(actor) && AssFormat.ExtractDialogue(c, true) != "")} line(s)");
 
-                string[] dialogues = Subs.Where(s => AssFormat.ExtractActor(s).Contains(actor) &&
+                string[] dialogues = Subs.Where(s => AssFormat.SplitActors(AssFormat.ExtractActor(s)).Contains(actor) &&
                                                      AssFormat.ExtractDialogue(s, true) != "")
                                          .Take(timingsNum)
                                          .ToArray();
