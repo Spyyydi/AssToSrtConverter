@@ -100,12 +100,12 @@ Text:Changed Text
 ## Actors synchronization
 **There can be wrong synchronizations so you need to check manually for correctness of synced actors**
 
-Takes actors from ASS file on the right side and allocates them in ASS file on the left side according to the start and end time of text lines.
+Takes actors from ASS file on the right side and allocates them in ASS file on the left side according to the start and end time of text lines.<br>
 ![filesLoaded_syncTab](images/filesLoaded_syncTab.jpg)
 
 <br>
 
-Not synced lines written in report box with number of line in ASS file and timing of the text.
+Not synced lines written in report box with number of line in ASS file and timing of the text.<br>
 ![synced_syncTab](images/synced_syncTab.jpg)
 
 
