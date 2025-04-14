@@ -184,7 +184,7 @@ For selected files (or for all files if no files selected) generates timings of 
 
 Generated `timings.txt` file for first two selected files in the list
 ```
-== Example sub file ==
+== Example sub file => [Empty actors: 2] ==
 [Actor 2] - 20 line(s)
 (00:34 - 00:37) Example text line 5
 (00:37 - 00:40) Example text line 6
@@ -194,7 +194,7 @@ Generated `timings.txt` file for first two selected files in the list
 (01:12 - 01:15) Example text line 13
 (01:23 - 01:25) Example text line 15
 
-== Example sub file 1 ==
+== Example sub file 1 => [Empty actors: 2] ==
 [Actor 6] - 1 line(s)
 (04:30 - 04:32) Example text line 81
 
