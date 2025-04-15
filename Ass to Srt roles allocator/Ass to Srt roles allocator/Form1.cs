@@ -1994,7 +1994,13 @@ namespace Ass_to_Srt_roles_allocator
                 string timingsFileNamePath = Path.Combine(batchDirPath, IMPORT_DIRNAME);
                 if (!Directory.Exists(timingsFileNamePath)) Directory.CreateDirectory(timingsFileNamePath);
 
-                timingsFileNamePath = Path.Combine(timingsFileNamePath, "timings.txt");
+                string timingsFileName = "";
+                if (isItemsSelected && lstAssFiles.SelectedItems.Count == 1)
+                    timingsFileName = $"[Timings] {lstAssFiles.SelectedItem}.txt";
+                else
+                    timingsFileName = "timings.txt";
+
+                timingsFileNamePath = Path.Combine(timingsFileNamePath, timingsFileName);
                 File.WriteAllLines(timingsFileNamePath, timings);
 
                 lblStatusBatch.Text = "Timings generated";
