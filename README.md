@@ -182,6 +182,9 @@ For selected files (or for all files if no files selected) generates timings of 
 - For each actor generates only first three text lines with its timings if there are more than three text lines
 <br>
 
+*If only one file selected then file name will be `[Timings] {selected ass file name}.txt` otherwise `timings.txt`*
+<br>
+
 Generated `timings.txt` file for first two selected files in the list
 ```
 == Example sub file => [Empty actors: 2] ==
