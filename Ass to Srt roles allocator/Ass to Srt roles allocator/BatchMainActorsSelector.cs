@@ -83,7 +83,7 @@ namespace Ass_to_Srt_roles_allocator
 
         private bool IsMainActorsContainsActor(string actor)
         {
-            return lstMainActors.Items.Cast<string>().Any(s => s.StartsWith(actor));
+            return lstMainActors.Items.Cast<string>().Any(s => s.Substring(0, s.IndexOf(RIGHT_ARROW)).Trim() == actor);
         }
 
         private string ChangeToArr(string actor)
