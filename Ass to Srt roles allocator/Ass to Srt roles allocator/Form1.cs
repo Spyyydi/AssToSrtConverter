@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace Ass_to_Srt_roles_allocator
         private BatchMainActorsSelector mainActorsSelector;
 
         BindingList<string> lstToChangeItems;
+
+        bool avoidMainActorsForTimings = false;
 
         public Form1()
         {
@@ -1770,7 +1773,7 @@ namespace Ass_to_Srt_roles_allocator
                     lastSavedMainActors
                     );
 
-                lblStatusBatch.Text = "Main actors saved to file";
+                ChangeStatusMsgInBatch("Main actors saved to file");
             }
             catch (Exception ex)
             {
@@ -1804,6 +1807,8 @@ namespace Ass_to_Srt_roles_allocator
                 {
                     ass.UpdateImport(batchMainActors, true);
                 }
+
+                avoidMainActorsForTimings = true;
             }
             catch (Exception ex)
             {
@@ -1861,6 +1866,7 @@ namespace Ass_to_Srt_roles_allocator
 
                 if (!ReadMainActorsFile(actorDirPath))
                 {
+                    avoidMainActorsForTimings = false;
                     batchMainActors.Clear();
                     lastSavedMainActors.Clear();
                 }
@@ -1882,7 +1888,7 @@ namespace Ass_to_Srt_roles_allocator
             {
                 mainActorsSelector = new BatchMainActorsSelector(
                     GetAllSelectedImports(),
-                    batchMainActors, lastSavedMainActors); // Created only if it doesn't exist
+                    batchMainActors, lastSavedMainActors, avoidMainActorsForTimings); // Created only if it doesn't exist
 
 
                 mainActorsSelector.Size = new Size(451, 360);
@@ -1903,7 +1909,15 @@ namespace Ass_to_Srt_roles_allocator
                     }
                 };
                 mainActorsSelector.SaveMainActorsEvent += () => SaveMainActorsForBatch();
-                mainActorsSelector.MainActorsChangedEvent += () => lblStatusBatch.Text = "Main actors saved";
+                mainActorsSelector.MainActorsChangedEvent += () => ChangeStatusMsgInBatch("Main actors saved");
+                mainActorsSelector.ChkBoxChangedEvent += chkBoxStatus =>
+                {
+                    avoidMainActorsForTimings = chkBoxStatus;
+                    if(chkBoxStatus)
+                        ChangeStatusMsgInBatch("Will avoid only main actors for timings");
+                    else
+                        ChangeStatusMsgInBatch("Will avoid any repeated actors for timings");
+                };
                 mainActorsSelector.FormClosed += (s, e) => mainActorsSelector = null; // Reset when closed
             }
 
@@ -1924,6 +1938,11 @@ namespace Ass_to_Srt_roles_allocator
                               .Distinct()
                               .ToList();
         }
+
+        private void ChangeStatusMsgInBatch(string msg)
+        {
+            lblStatusBatch.Text = $"[{DateTime.Now.ToString("HH:mm:ss")}] {msg}";
+        }
         #endregion
 
         #region Button click events
@@ -1936,14 +1955,16 @@ namespace Ass_to_Srt_roles_allocator
             {
                 if (batchDirPath != folderBrowserDialog.SelectedPath)
                     if(ReadDirectory(folderBrowserDialog.SelectedPath))
-                        lblStatusBatch.Text = "Ass files imported";
+                        ChangeStatusMsgInBatch("Ass files imported");
             }
         }
 
         private void btnSelectMainActors_Click(object sender, EventArgs e)
         {
-            lblStatusBatch.Text = "Main actors selector form opened";
+            bool isMainActorsSelectorOpen = mainActorsSelector != null && !mainActorsSelector.IsDisposed;
             OpenBatchSelector();
+
+            if(!isMainActorsSelectorOpen) ChangeStatusMsgInBatch("Main actors selector form opened");
         }
 
         private void btnCreateImports_Click(object sender, EventArgs e)
@@ -1969,7 +1990,7 @@ namespace Ass_to_Srt_roles_allocator
 
             if(isImportsSaved)
             {
-                lblStatusBatch.Text = "Imports saved";
+                ChangeStatusMsgInBatch("Imports saved");
             }
 
         }
@@ -1981,12 +2002,23 @@ namespace Ass_to_Srt_roles_allocator
 
             List<string> timings = new List<string>();
             HashSet<string> actorsToExclude = new HashSet<string>();
+            if(avoidMainActorsForTimings)
+            {
+                string[] mainActors = batchMainActors.Where(s => s.Count(c => c == ':') == 1 && !s.EndsWith(":") && !s.StartsWith(":"))
+                                                     .Select(s => s.Substring(0, s.IndexOf(':')))
+                                                     .ToArray();
+                foreach (string actor in mainActors) 
+                {
+                    actorsToExclude.Add(actor);
+                }
+            }
+
             foreach (string item in lstAssFiles.Items)
             {
                 if (isItemsSelected && !lstAssFiles.SelectedItems.Cast<string>().Contains(item))
                     continue;
 
-                timings.AddRange(batchFiles.FirstOrDefault(f => f.FileName == item).GetTimings(actorsToExclude));
+                timings.AddRange(batchFiles.FirstOrDefault(f => f.FileName == item).GetTimings(actorsToExclude, avoidMainActorsForTimings));
             }
 
             if (timings.Count > 0)
@@ -2003,7 +2035,7 @@ namespace Ass_to_Srt_roles_allocator
                 timingsFileNamePath = Path.Combine(timingsFileNamePath, timingsFileName);
                 File.WriteAllLines(timingsFileNamePath, timings);
 
-                lblStatusBatch.Text = "Timings generated";
+                ChangeStatusMsgInBatch("Timings generated");
             }
             else MessageBox.Show("No timings to generate");
         }
@@ -2011,7 +2043,7 @@ namespace Ass_to_Srt_roles_allocator
         private void btnReloadFiles_Click(object sender, EventArgs e)
         {
             if(ReadDirectory(batchDirPath))
-                lblStatusBatch.Text = "Ass files reloaded";
+                ChangeStatusMsgInBatch("Ass files reloaded");
         }
 
         private void btnLoadAssNimport_Click(object sender, EventArgs e)
@@ -2031,7 +2063,7 @@ namespace Ass_to_Srt_roles_allocator
                     }
                 }
                 
-                lblStatusBatch.Text = status + " sent to Convert tab";
+                ChangeStatusMsgInBatch(status + " sent to Convert tab");
             }
         }
         #endregion
@@ -2040,7 +2072,7 @@ namespace Ass_to_Srt_roles_allocator
         private void lstAssFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateLabels();
-            if (lstAssFiles.SelectedItems.Count == 1) btnLoadAssNimport.Enabled = true;
+            if (lstAssFiles.SelectedItems.Count == 1 || lstAssFiles.Items.Count == 1) btnLoadAssNimport.Enabled = true;
             else btnLoadAssNimport.Enabled = false;
 
             if(mainActorsSelector != null && !mainActorsSelector.IsDisposed)
@@ -2072,6 +2104,8 @@ namespace Ass_to_Srt_roles_allocator
                 btnGenerateTimings.Enabled = true;
                 btnReloadFiles.Enabled = true;
             }
+
+            if(lstAssFiles.Items.Count == 1) btnLoadAssNimport.Enabled = true;
         }
 
         private void UpdateLabels()
@@ -2145,7 +2179,7 @@ namespace Ass_to_Srt_roles_allocator
 
             if (Directory.Exists(fileList[0]) && batchDirPath != fileList[0])
                 if(ReadDirectory(fileList[0]))
-                    lblStatusBatch.Text = "Ass files imported";
+                    ChangeStatusMsgInBatch("Ass files imported");
         }
 
         private void lstAssFiles_DragEnter(object sender, DragEventArgs e)

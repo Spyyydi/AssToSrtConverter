@@ -19,11 +19,12 @@ namespace Ass_to_Srt_roles_allocator
         public event Action<List<string>> ChangeMainActorsEvent;
         public event Action SaveMainActorsEvent;
         public event Action MainActorsChangedEvent;
+        public event Action<bool> ChkBoxChangedEvent;
 
         private List<string> allocatedActors;
         private List<string> lastSavedMainActors;
 
-        public BatchMainActorsSelector(IReadOnlyList<string> import, IReadOnlyList<string> main, IReadOnlyList<string> lastSavedMain)
+        public BatchMainActorsSelector(IReadOnlyList<string> import, IReadOnlyList<string> main, IReadOnlyList<string> lastSavedMain, bool chkBoxStatus)
         {
             InitializeComponent();
             lastSavedMainActors = new List<string>();
@@ -44,6 +45,10 @@ namespace Ass_to_Srt_roles_allocator
             allocatedActors = new List<string>();
 
             SetAllocedActors(import);
+
+            chkTimingsWithMainActors.Checked = chkBoxStatus;
+            toolTipChckBox.SetToolTip(chkTimingsWithMainActors, "While generating timings will avoid only main actors");
+            ChangeCheckBoxState();
         }
 
         #region Additional methods
@@ -68,6 +73,7 @@ namespace Ass_to_Srt_roles_allocator
             ModifyLabel(MAIN_ACTORS_LABEL);
             btnSave.Enabled = false;
             ModifyDeleteButton();
+            ChangeCheckBoxState();
         }
 
         private void UpdateAllocatedActorsListBox()
@@ -164,6 +170,11 @@ namespace Ass_to_Srt_roles_allocator
                 btnMove.Enabled = false;
             else btnMove.Enabled = true;
         }
+
+        private void SendCheckBoxStateToMainForm()
+        {
+            ChkBoxChangedEvent?.Invoke(chkTimingsWithMainActors.Checked);
+        }
         #endregion
 
         #region Button click events
@@ -193,6 +204,13 @@ namespace Ass_to_Srt_roles_allocator
             ModifyDeleteButton();
 
             ModifyMoveButton();
+            ChangeCheckBoxState();
+
+            ChangeMainActorsEvent?.Invoke(lstMainActors.Items.Cast<string>()
+                                                             .Select(s => ChangeToColon(s))
+                                                             .Where(s => s.Count(c => c == ':') == 1 && !s.EndsWith(":") && !s.StartsWith(":"))
+                                                             .ToList());
+            MainActorsChangedEvent?.Invoke();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -234,18 +252,23 @@ namespace Ass_to_Srt_roles_allocator
 
             ModifyDeleteButton();
             ModifyMoveButton();
-        }
+            ChangeCheckBoxState();
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
             ChangeMainActorsEvent?.Invoke(lstMainActors.Items.Cast<string>()
                                                              .Select(s => ChangeToColon(s))
                                                              .Where(s => s.Count(c => c == ':') == 1 && !s.EndsWith(":") && !s.StartsWith(":"))
                                                              .ToList());
-
             MainActorsChangedEvent?.Invoke();
+        }
 
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.Close();
+        }
+
+        private void chkTimingsWithMainActors_CheckedChanged(object sender, EventArgs e)
+        {
+            SendCheckBoxStateToMainForm();
         }
         #endregion
 
@@ -262,6 +285,22 @@ namespace Ass_to_Srt_roles_allocator
             ModifyLabel(ALLOCED_ACTORS_LABEL);
 
             ModifyMoveButton();
+        }
+
+        private void ChangeCheckBoxState()
+        {
+            bool prevState = chkTimingsWithMainActors.Checked;
+
+            if (lstMainActors.Items.Count > 0)
+                chkTimingsWithMainActors.Enabled = true;
+            else
+            {
+                chkTimingsWithMainActors.Enabled = false;
+                chkTimingsWithMainActors.Checked = false;
+            }
+
+            if (chkTimingsWithMainActors.Checked != prevState)
+                SendCheckBoxStateToMainForm();
         }
         #endregion
     }

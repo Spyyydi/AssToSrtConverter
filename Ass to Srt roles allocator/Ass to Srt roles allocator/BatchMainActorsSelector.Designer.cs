@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BatchMainActorsSelector));
             this.lstAllocedActors = new System.Windows.Forms.ListBox();
             this.lstMainActors = new System.Windows.Forms.ListBox();
@@ -37,6 +38,8 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.lblMainActors = new System.Windows.Forms.Label();
             this.lblAllocedActors = new System.Windows.Forms.Label();
+            this.chkTimingsWithMainActors = new System.Windows.Forms.CheckBox();
+            this.toolTipChckBox = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // lstAllocedActors
@@ -46,7 +49,7 @@
             this.lstAllocedActors.Location = new System.Drawing.Point(3, 21);
             this.lstAllocedActors.Name = "lstAllocedActors";
             this.lstAllocedActors.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstAllocedActors.Size = new System.Drawing.Size(183, 264);
+            this.lstAllocedActors.Size = new System.Drawing.Size(183, 238);
             this.lstAllocedActors.Sorted = true;
             this.lstAllocedActors.TabIndex = 0;
             this.lstAllocedActors.SelectedIndexChanged += new System.EventHandler(this.lstAllocedActors_SelectedIndexChanged);
@@ -126,6 +129,18 @@
             this.lblAllocedActors.TabIndex = 7;
             this.lblAllocedActors.Text = "Allocated actors: 0 | Selected: 0";
             // 
+            // chkTimingsWithMainActors
+            // 
+            this.chkTimingsWithMainActors.AutoSize = true;
+            this.chkTimingsWithMainActors.Enabled = false;
+            this.chkTimingsWithMainActors.Location = new System.Drawing.Point(3, 268);
+            this.chkTimingsWithMainActors.Name = "chkTimingsWithMainActors";
+            this.chkTimingsWithMainActors.Size = new System.Drawing.Size(196, 17);
+            this.chkTimingsWithMainActors.TabIndex = 8;
+            this.chkTimingsWithMainActors.Text = "Use main actors in timings generator";
+            this.chkTimingsWithMainActors.UseVisualStyleBackColor = true;
+            this.chkTimingsWithMainActors.CheckedChanged += new System.EventHandler(this.chkTimingsWithMainActors_CheckedChanged);
+            // 
             // BatchMainActorsSelector
             // 
             this.AcceptButton = this.btnClose;
@@ -134,6 +149,7 @@
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(435, 321);
             this.ControlBox = false;
+            this.Controls.Add(this.chkTimingsWithMainActors);
             this.Controls.Add(this.lblAllocedActors);
             this.Controls.Add(this.lblMainActors);
             this.Controls.Add(this.btnDelete);
@@ -166,5 +182,7 @@
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label lblMainActors;
         private System.Windows.Forms.Label lblAllocedActors;
+        private System.Windows.Forms.CheckBox chkTimingsWithMainActors;
+        private System.Windows.Forms.ToolTip toolTipChckBox;
     }
 }

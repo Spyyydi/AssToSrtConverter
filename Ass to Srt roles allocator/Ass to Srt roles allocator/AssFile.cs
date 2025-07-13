@@ -189,7 +189,7 @@ namespace Ass_to_Srt_roles_allocator
             return true;
         }
 
-        public List<string> GetTimings(HashSet<string> exclude)
+        public List<string> GetTimings(HashSet<string> exclude, bool avoidOnlyMainActors)
         {
             List<string> emptyActors = Import.Where(s => s.Last() == ':')
                                              .Select(s => s.Substring(0, s.IndexOf(':')))
@@ -208,7 +208,8 @@ namespace Ass_to_Srt_roles_allocator
 
             foreach (string actor in emptyActors)
             {
-                exclude.Add(actor);
+                if(!avoidOnlyMainActors)
+                    exclude.Add(actor);
 
                 timings.Add($"[{actor}] - {Subs.Count(c => AssFormat.SplitActors(AssFormat.ExtractActor(c)).Contains(actor) && AssFormat.ExtractDialogue(c, true) != "")} line(s)");
 
