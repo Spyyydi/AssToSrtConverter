@@ -156,7 +156,8 @@ Actors from this form will be used while creating import files.<br>
 ![mainActorsSelectorWithActors_batchImportCreatorTab](images/mainActorsSelectorWithActors_batchImportCreatorTab.jpg)<br>
 
 - `Save to file` button will save main actors to `Actors main.txt` file in `Actors to import` subfolder<br>
-*If form closed without saving to file, main actors will be saved when new folder imported, same folder reloaded, or application closed*
+*If form closed without saving to file, main actors will be saved when new folder imported, same folder reloaded, or application closed*<br>
+- Checkbox state affects only generated timings (more about it in [Generate timings](#generate-timings) section)
 - While form opened you can change selected items in `ASS files list`
 <br>
 
@@ -178,7 +179,8 @@ then created import files will contain unallocated actors only, so later you can
 ---
 #### Generate timings
 For selected files (or for all files if no files selected) generates timings of unallocated actors.
-- For each new file excludes actors that were in previous files. (If you want to see all unallocated actors in file generate timings selecting only one file in the list)
+- For each new file excludes actors that were in previous files. (If you want to see all unallocated actors in file generate timings selecting only one file in the list)<br>
+*If in `Select main actors` form checkbox checked then only main actors will be excluded from generated timings*<br>
 - For each actor generates only first three text lines with its timings if there are more than three text lines
 <br>
 
