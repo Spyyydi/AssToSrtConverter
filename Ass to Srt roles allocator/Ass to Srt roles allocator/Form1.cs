@@ -2029,6 +2029,8 @@ namespace Ass_to_Srt_roles_allocator
                 string timingsFileName = "";
                 if (isItemsSelected && lstAssFiles.SelectedItems.Count == 1)
                     timingsFileName = $"[Timings] {lstAssFiles.SelectedItem}.txt";
+                else if(lstAssFiles.Items.Count == 1)
+                    timingsFileName = $"[Timings] {lstAssFiles.Items[0].ToString()}.txt";
                 else
                     timingsFileName = "timings.txt";
 
