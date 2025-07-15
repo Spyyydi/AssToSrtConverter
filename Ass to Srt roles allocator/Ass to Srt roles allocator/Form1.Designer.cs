@@ -97,6 +97,23 @@
             this.toolTipFileNameAssWithActors = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipBatchPath = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.tabBatchConvert = new System.Windows.Forms.TabPage();
+            this.btnSelectDirForBatchConvert = new System.Windows.Forms.Button();
+            this.lblPathForBatchConvert = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkSeparateActorsForBatchConvert = new System.Windows.Forms.CheckBox();
+            this.chkActorsPerLineForBatchConvert = new System.Windows.Forms.CheckBox();
+            this.chkKeepNewLinesForBatchConvert = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.rdKeepAssFormatting = new System.Windows.Forms.RadioButton();
+            this.rdKeepntAssFormatting = new System.Windows.Forms.RadioButton();
+            this.grpListForBatchConvert = new System.Windows.Forms.GroupBox();
+            this.lstAssFilesForBatchConvert = new System.Windows.Forms.ListBox();
+            this.btnConvertForBatchConvert = new System.Windows.Forms.Button();
+            this.btnReloadFilesForBatchConvert = new System.Windows.Forms.Button();
+            this.btnReportForBatchConvert = new System.Windows.Forms.Button();
+            this.chkInOneFolderForBatchConvert = new System.Windows.Forms.CheckBox();
+            this.lblConvertionStatusForBatchConvert = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabConvert.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -106,6 +123,10 @@
             this.tabBatchImport.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabBatchConvert.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.grpListForBatchConvert.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -133,6 +154,7 @@
             this.tabControl1.Controls.Add(this.tabConvert);
             this.tabControl1.Controls.Add(this.tabSyncActors);
             this.tabControl1.Controls.Add(this.tabBatchImport);
+            this.tabControl1.Controls.Add(this.tabBatchConvert);
             this.tabControl1.Location = new System.Drawing.Point(-1, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -812,6 +834,192 @@
             this.btnSelectDirForBatch.UseVisualStyleBackColor = true;
             this.btnSelectDirForBatch.Click += new System.EventHandler(this.btnSelectDirForBatch_Click);
             // 
+            // tabBatchConvert
+            // 
+            this.tabBatchConvert.BackColor = System.Drawing.SystemColors.Control;
+            this.tabBatchConvert.Controls.Add(this.lblConvertionStatusForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.chkInOneFolderForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.btnReportForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.btnReloadFilesForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.btnConvertForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.grpListForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.groupBox4);
+            this.tabBatchConvert.Controls.Add(this.groupBox3);
+            this.tabBatchConvert.Controls.Add(this.lblPathForBatchConvert);
+            this.tabBatchConvert.Controls.Add(this.btnSelectDirForBatchConvert);
+            this.tabBatchConvert.Location = new System.Drawing.Point(4, 22);
+            this.tabBatchConvert.Name = "tabBatchConvert";
+            this.tabBatchConvert.Padding = new System.Windows.Forms.Padding(3);
+            this.tabBatchConvert.Size = new System.Drawing.Size(392, 259);
+            this.tabBatchConvert.TabIndex = 3;
+            this.tabBatchConvert.Text = "Batch convert";
+            // 
+            // btnSelectDirForBatchConvert
+            // 
+            this.btnSelectDirForBatchConvert.Location = new System.Drawing.Point(6, 8);
+            this.btnSelectDirForBatchConvert.Name = "btnSelectDirForBatchConvert";
+            this.btnSelectDirForBatchConvert.Size = new System.Drawing.Size(99, 23);
+            this.btnSelectDirForBatchConvert.TabIndex = 0;
+            this.btnSelectDirForBatchConvert.Text = "Select directory";
+            this.btnSelectDirForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // lblPathForBatchConvert
+            // 
+            this.lblPathForBatchConvert.AutoEllipsis = true;
+            this.lblPathForBatchConvert.AutoSize = true;
+            this.lblPathForBatchConvert.Location = new System.Drawing.Point(111, 13);
+            this.lblPathForBatchConvert.MaximumSize = new System.Drawing.Size(286, 13);
+            this.lblPathForBatchConvert.Name = "lblPathForBatchConvert";
+            this.lblPathForBatchConvert.Size = new System.Drawing.Size(35, 13);
+            this.lblPathForBatchConvert.TabIndex = 1;
+            this.lblPathForBatchConvert.Text = "Path: ";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkKeepNewLinesForBatchConvert);
+            this.groupBox3.Controls.Add(this.chkActorsPerLineForBatchConvert);
+            this.groupBox3.Controls.Add(this.chkSeparateActorsForBatchConvert);
+            this.groupBox3.Location = new System.Drawing.Point(6, 161);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(110, 95);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Convert options";
+            // 
+            // chkSeparateActorsForBatchConvert
+            // 
+            this.chkSeparateActorsForBatchConvert.AutoSize = true;
+            this.chkSeparateActorsForBatchConvert.Location = new System.Drawing.Point(7, 22);
+            this.chkSeparateActorsForBatchConvert.Name = "chkSeparateActorsForBatchConvert";
+            this.chkSeparateActorsForBatchConvert.Size = new System.Drawing.Size(94, 17);
+            this.chkSeparateActorsForBatchConvert.TabIndex = 0;
+            this.chkSeparateActorsForBatchConvert.Text = "Separate SRT";
+            this.chkSeparateActorsForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // chkActorsPerLineForBatchConvert
+            // 
+            this.chkActorsPerLineForBatchConvert.AutoSize = true;
+            this.chkActorsPerLineForBatchConvert.Location = new System.Drawing.Point(7, 47);
+            this.chkActorsPerLineForBatchConvert.Name = "chkActorsPerLineForBatchConvert";
+            this.chkActorsPerLineForBatchConvert.Size = new System.Drawing.Size(93, 17);
+            this.chkActorsPerLineForBatchConvert.TabIndex = 1;
+            this.chkActorsPerLineForBatchConvert.Text = "Actors per line";
+            this.chkActorsPerLineForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // chkKeepNewLinesForBatchConvert
+            // 
+            this.chkKeepNewLinesForBatchConvert.AutoSize = true;
+            this.chkKeepNewLinesForBatchConvert.Checked = true;
+            this.chkKeepNewLinesForBatchConvert.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkKeepNewLinesForBatchConvert.Location = new System.Drawing.Point(7, 72);
+            this.chkKeepNewLinesForBatchConvert.Name = "chkKeepNewLinesForBatchConvert";
+            this.chkKeepNewLinesForBatchConvert.Size = new System.Drawing.Size(98, 17);
+            this.chkKeepNewLinesForBatchConvert.TabIndex = 2;
+            this.chkKeepNewLinesForBatchConvert.Text = "Keep new lines";
+            this.chkKeepNewLinesForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rdKeepntAssFormatting);
+            this.groupBox4.Controls.Add(this.rdKeepAssFormatting);
+            this.groupBox4.Location = new System.Drawing.Point(122, 161);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(116, 71);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Keep ass formatting";
+            // 
+            // rdKeepAssFormatting
+            // 
+            this.rdKeepAssFormatting.AutoSize = true;
+            this.rdKeepAssFormatting.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rdKeepAssFormatting.Location = new System.Drawing.Point(6, 19);
+            this.rdKeepAssFormatting.Name = "rdKeepAssFormatting";
+            this.rdKeepAssFormatting.Size = new System.Drawing.Size(49, 20);
+            this.rdKeepAssFormatting.TabIndex = 0;
+            this.rdKeepAssFormatting.Text = "Yes";
+            this.rdKeepAssFormatting.UseVisualStyleBackColor = true;
+            // 
+            // rdKeepntAssFormatting
+            // 
+            this.rdKeepntAssFormatting.AutoSize = true;
+            this.rdKeepntAssFormatting.Checked = true;
+            this.rdKeepntAssFormatting.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rdKeepntAssFormatting.Location = new System.Drawing.Point(6, 44);
+            this.rdKeepntAssFormatting.Name = "rdKeepntAssFormatting";
+            this.rdKeepntAssFormatting.Size = new System.Drawing.Size(43, 20);
+            this.rdKeepntAssFormatting.TabIndex = 1;
+            this.rdKeepntAssFormatting.TabStop = true;
+            this.rdKeepntAssFormatting.Text = "No";
+            this.rdKeepntAssFormatting.UseVisualStyleBackColor = true;
+            // 
+            // grpListForBatchConvert
+            // 
+            this.grpListForBatchConvert.Controls.Add(this.lstAssFilesForBatchConvert);
+            this.grpListForBatchConvert.Location = new System.Drawing.Point(6, 37);
+            this.grpListForBatchConvert.Name = "grpListForBatchConvert";
+            this.grpListForBatchConvert.Size = new System.Drawing.Size(382, 120);
+            this.grpListForBatchConvert.TabIndex = 1;
+            this.grpListForBatchConvert.TabStop = false;
+            this.grpListForBatchConvert.Text = "ASS files list (Selected: 0)";
+            // 
+            // lstAssFilesForBatchConvert
+            // 
+            this.lstAssFilesForBatchConvert.FormattingEnabled = true;
+            this.lstAssFilesForBatchConvert.Location = new System.Drawing.Point(6, 19);
+            this.lstAssFilesForBatchConvert.Name = "lstAssFilesForBatchConvert";
+            this.lstAssFilesForBatchConvert.Size = new System.Drawing.Size(370, 95);
+            this.lstAssFilesForBatchConvert.TabIndex = 0;
+            // 
+            // btnConvertForBatchConvert
+            // 
+            this.btnConvertForBatchConvert.Location = new System.Drawing.Point(244, 201);
+            this.btnConvertForBatchConvert.Name = "btnConvertForBatchConvert";
+            this.btnConvertForBatchConvert.Size = new System.Drawing.Size(144, 31);
+            this.btnConvertForBatchConvert.TabIndex = 5;
+            this.btnConvertForBatchConvert.Text = "Convert";
+            this.btnConvertForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // btnReloadFilesForBatchConvert
+            // 
+            this.btnReloadFilesForBatchConvert.Location = new System.Drawing.Point(244, 233);
+            this.btnReloadFilesForBatchConvert.Name = "btnReloadFilesForBatchConvert";
+            this.btnReloadFilesForBatchConvert.Size = new System.Drawing.Size(71, 23);
+            this.btnReloadFilesForBatchConvert.TabIndex = 7;
+            this.btnReloadFilesForBatchConvert.Text = "Reload files";
+            this.btnReloadFilesForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // btnReportForBatchConvert
+            // 
+            this.btnReportForBatchConvert.Location = new System.Drawing.Point(317, 233);
+            this.btnReportForBatchConvert.Name = "btnReportForBatchConvert";
+            this.btnReportForBatchConvert.Size = new System.Drawing.Size(71, 23);
+            this.btnReportForBatchConvert.TabIndex = 6;
+            this.btnReportForBatchConvert.Text = "Open report";
+            this.btnReportForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // chkInOneFolderForBatchConvert
+            // 
+            this.chkInOneFolderForBatchConvert.AutoSize = true;
+            this.chkInOneFolderForBatchConvert.Location = new System.Drawing.Point(122, 239);
+            this.chkInOneFolderForBatchConvert.Name = "chkInOneFolderForBatchConvert";
+            this.chkInOneFolderForBatchConvert.Size = new System.Drawing.Size(116, 17);
+            this.chkInOneFolderForBatchConvert.TabIndex = 4;
+            this.chkInOneFolderForBatchConvert.Text = "Put all in one folder";
+            this.chkInOneFolderForBatchConvert.UseVisualStyleBackColor = true;
+            // 
+            // lblConvertionStatusForBatchConvert
+            // 
+            this.lblConvertionStatusForBatchConvert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblConvertionStatusForBatchConvert.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblConvertionStatusForBatchConvert.ForeColor = System.Drawing.Color.Red;
+            this.lblConvertionStatusForBatchConvert.Location = new System.Drawing.Point(244, 161);
+            this.lblConvertionStatusForBatchConvert.Name = "lblConvertionStatusForBatchConvert";
+            this.lblConvertionStatusForBatchConvert.Size = new System.Drawing.Size(144, 37);
+            this.lblConvertionStatusForBatchConvert.TabIndex = 9;
+            this.lblConvertionStatusForBatchConvert.Text = "Converted";
+            this.lblConvertionStatusForBatchConvert.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -841,6 +1049,13 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.tabBatchConvert.ResumeLayout(false);
+            this.tabBatchConvert.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.grpListForBatchConvert.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -913,6 +1128,23 @@
         private System.Windows.Forms.Button btnConvertWithAssFormatting;
         private System.Windows.Forms.Label lblActorLines;
         private System.Windows.Forms.Label lblDuberLines;
+        private System.Windows.Forms.TabPage tabBatchConvert;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton rdKeepntAssFormatting;
+        private System.Windows.Forms.RadioButton rdKeepAssFormatting;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox chkKeepNewLinesForBatchConvert;
+        private System.Windows.Forms.CheckBox chkActorsPerLineForBatchConvert;
+        private System.Windows.Forms.CheckBox chkSeparateActorsForBatchConvert;
+        private System.Windows.Forms.Label lblPathForBatchConvert;
+        private System.Windows.Forms.Button btnSelectDirForBatchConvert;
+        private System.Windows.Forms.Button btnConvertForBatchConvert;
+        private System.Windows.Forms.GroupBox grpListForBatchConvert;
+        private System.Windows.Forms.ListBox lstAssFilesForBatchConvert;
+        private System.Windows.Forms.Button btnReportForBatchConvert;
+        private System.Windows.Forms.Button btnReloadFilesForBatchConvert;
+        private System.Windows.Forms.Label lblConvertionStatusForBatchConvert;
+        private System.Windows.Forms.CheckBox chkInOneFolderForBatchConvert;
     }
 }
 
